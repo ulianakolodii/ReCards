@@ -47,11 +47,11 @@ const MainForm = ({ create }) => {
         <form className={classes.mainForm}>
           <h1>Форма реєстрації пацієнта</h1>
           <h3>Прізвище</h3>
-          <InputMainForm value={client.Surname}></InputMainForm>
+          <InputMainForm value={client.Surname} placeholder="Введіть прізвище пацієнта"></InputMainForm>
           <h3>Ім'я</h3>
-          <InputMainForm value={client.Name}></InputMainForm>
+          <InputMainForm value={client.Name} placeholder="Введіть ім'я пацієнта"></InputMainForm>
           <h3>По-батькові</h3>
-          <InputMainForm value={client.FathersName}></InputMainForm>
+          <InputMainForm value={client.FathersName} placeholder="Введіть по-батькові пацієнта"></InputMainForm>
           <h3>Дата народження</h3>
           <DatePicker onChange={onChange} value={value} />
           <label className={classes.checkBoxContainer}>
@@ -67,7 +67,7 @@ const MainForm = ({ create }) => {
             <input type="checkbox" value={client.Other} />
           </label>
           <h3>Лікар, який здійснює прийом</h3>
-          <select value={client.Dodctor}>
+          <select value={client.Doctor} defaultValue="Оберіть лікаря">
             <option>Лікар 1</option>
             <option>Лікар 2</option>
             <option>Лікар 3</option>
@@ -76,7 +76,7 @@ const MainForm = ({ create }) => {
           <h3>Дата</h3>
           <h3>Час</h3>
           <h3>Додаткова інформація</h3>
-          <InputMainForm value={client.Additional}></InputMainForm>
+          <InputMainForm value={client.Additional} placeholder="Введіть додаткову інформацію"></InputMainForm>
           <button type="submit" onClick={addNewClient}>
             Зареєструвати
           </button>
