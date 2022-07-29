@@ -1,0 +1,13 @@
+.main {
+    display: flex;
+    height: 100vh;
+}
+
+.main > div:nth-child(1) {
+    width: 100px;
+}
+
+.main > div:nth-child(2) {
+    background-color: var(--content-bg);
+    flex: 1;
+}
