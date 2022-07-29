@@ -1,0 +1,6 @@
+:root {
+    --sidebar-bg: #fff;
+    --sidebar-color: #333;
+    --sidbar-hover-bg: rgba(255, 255, 255, 0.02);
+    --content-bg: #f0f4f7;
+}

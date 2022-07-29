@@ -1,0 +1,13 @@
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+.dashboard > div:nth-child(1) {
+    width: 300px;
+}
+
+.dashboard > div:nth-child(2) {
+    background-color: var(--content-bg);
+    flex: 1;
+}
