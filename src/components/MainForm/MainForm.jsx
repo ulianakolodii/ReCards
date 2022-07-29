@@ -47,24 +47,24 @@ const MainForm = ({ create }) => {
         <form className={classes.mainForm}>
           <h1>Форма реєстрації пацієнта</h1>
           <h3>Прізвище</h3>
-          <InputMainForm value={client.Surname} placeholder="Введіть прізвище пацієнта"></InputMainForm>
+          <InputMainForm defaultValue={client.Surname} placeholder="Введіть прізвище пацієнта"></InputMainForm>
           <h3>Ім'я</h3>
-          <InputMainForm value={client.Name} placeholder="Введіть ім'я пацієнта"></InputMainForm>
+          <InputMainForm defaultValue={client.Name} placeholder="Введіть ім'я пацієнта"></InputMainForm>
           <h3>По-батькові</h3>
-          <InputMainForm value={client.FathersName} placeholder="Введіть по-батькові пацієнта"></InputMainForm>
+          <InputMainForm defaultValue={client.FathersName} placeholder="Введіть по-батькові пацієнта"></InputMainForm>
           <h3>Дата народження</h3>
           <DatePicker onChange={onChange} value={value} />
           <label className={classes.checkBoxContainer}>
             <h3>Військовослужбовець</h3>
-            <input type="checkbox" value={client.Enlistee} />
+            <input type="checkbox" defaultValue={client.Enlistee} />
           </label>
           <label className={classes.checkBoxContainer}>
             <h3>Внутрішньо переміщена особа</h3>
-            <input type="checkbox" value={client.Displaced} />
+            <input type="checkbox" defaultValue={client.Displaced} />
           </label>
           <label className={classes.checkBoxContainer}>
             <h3>Інше</h3>
-            <input type="checkbox" value={client.Other} />
+            <input type="checkbox" defaultValue={client.Other} />
           </label>
           <h3>Лікар, який здійснює прийом</h3>
           <select value={client.Doctor} defaultValue="Оберіть лікаря">
@@ -76,7 +76,7 @@ const MainForm = ({ create }) => {
           <h3>Дата</h3>
           <h3>Час</h3>
           <h3>Додаткова інформація</h3>
-          <InputMainForm value={client.Additional} placeholder="Введіть додаткову інформацію"></InputMainForm>
+          <InputMainForm defaultValue={client.Additional} placeholder="Введіть додаткову інформацію"></InputMainForm>
           <button type="submit" onClick={addNewClient}>
             Зареєструвати
           </button>

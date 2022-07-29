@@ -3,7 +3,7 @@ import classes from "./style.module.css"
 
 const InputMainForm = (props) => {
     return (
-        <input className = {classes.inputMainForm} {...props}/>
+        <input type="text" className = {classes.inputMainForm} {...props}/>
     );
 };
 

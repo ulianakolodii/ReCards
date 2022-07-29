@@ -20,7 +20,7 @@ export const Dashboard = ({ children }) => {
           </li>
           <li>
             <NavLink to="/add-pacient" style={changeActiveColor}>
-              Додати паціента
+              Додати пацієнта
             </NavLink>
           </li>
           <li>

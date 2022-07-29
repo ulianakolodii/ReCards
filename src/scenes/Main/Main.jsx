@@ -15,13 +15,13 @@ export const Main = ({ children }) => {
         {/* <img src="../../logo.png" alt="logo" /> */}
         <ul>
           <li>
-            <NavLink to="/" style={changeActiveColor}>
+            <NavLink to="/add-pacient" style={changeActiveColor}>
               <PacientIcon />
-              Паціенти
+              Пацієнти
             </NavLink>
           </li>
           <li>
-            <NavLink to="/add-pacient" style={changeActiveColor}>
+            <NavLink to="/add-doctor" style={changeActiveColor}>
               Лікарі
             </NavLink>
           </li>

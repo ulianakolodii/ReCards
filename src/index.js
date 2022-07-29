@@ -5,6 +5,7 @@ import "./index.css";
 import "./variables.css";
 import App from "./App";
 import { Dashboard, Main } from "./scenes";
+import DoctorsList from "./components/DoctorsList/DoctorsList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -13,7 +14,7 @@ root.render(
       <Routes>
         <Route path="/" element={<div>Home</div>} />
         <Route path="add-pacient" element={<App />} />
-        <Route path="add-doctor" element={<div>Hello</div>} />
+        <Route path="add-doctor" element={<DoctorsList />} />
         <Route path="invoices" element={<div>Hello 2</div>} />
       </Routes>
     </Main>
