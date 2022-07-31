@@ -1,3 +1,5 @@
+@import url(../../common.css);
+
 .mainForm {
     display: flex;
     flex-direction: column;
@@ -9,3 +11,17 @@
     flex-direction: column;
     align-items: center;
 }
+
+.datePicker {
+    background-color: var(--input-background-focus-color);
+  }
+  
+  .datePicker:hover {
+    background-color: var(--input-background-hover-color);
+  }
+  
+  .datePicker:focus {
+    border: 1px solid var(--input-border-focus-color);
+    background-color: var(--input-background-focus-color);
+    outline: 3px solid var(--input-outline-color) ;
+  }

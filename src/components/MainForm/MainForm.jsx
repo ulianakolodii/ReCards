@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputMainForm from "../InputMainForm/InputMainForm";
+import Input from "../Input/Input";
 import DatePicker from "react-date-picker";
 import classes from "./style.module.css";
 
@@ -47,16 +47,16 @@ const MainForm = ({ create }) => {
         <form className={classes.mainForm}>
           <h1>Форма реєстрації пацієнта</h1>
           <h3>Прізвище</h3>
-          <InputMainForm defaultValue={client.Surname} placeholder="Введіть прізвище пацієнта"></InputMainForm>
+          <Input defaultValue={client.Surname} placeholder="Введіть прізвище пацієнта"></Input>
           <h3>Ім'я</h3>
-          <InputMainForm defaultValue={client.Name} placeholder="Введіть ім'я пацієнта"></InputMainForm>
+          <Input defaultValue={client.Name} placeholder="Введіть ім'я пацієнта"></Input>
           <h3>По-батькові</h3>
-          <InputMainForm defaultValue={client.FathersName} placeholder="Введіть по-батькові пацієнта"></InputMainForm>
+          <Input defaultValue={client.FathersName} placeholder="Введіть по-батькові пацієнта"></Input>
           <h3>Дата народження</h3>
-          <DatePicker onChange={onChange} value={value} />
+          <DatePicker onChange={onChange} value={value}  className={classes.datePicker}/>
           <label className={classes.checkBoxContainer}>
             <h3>Військовослужбовець</h3>
-            <input type="checkbox" defaultValue={client.Enlistee} />
+            <input type="checkbox" defaultValue={client.Enlistee}/>
           </label>
           <label className={classes.checkBoxContainer}>
             <h3>Внутрішньо переміщена особа</h3>
@@ -76,7 +76,7 @@ const MainForm = ({ create }) => {
           <h3>Дата</h3>
           <h3>Час</h3>
           <h3>Додаткова інформація</h3>
-          <InputMainForm defaultValue={client.Additional} placeholder="Введіть додаткову інформацію"></InputMainForm>
+          <Input defaultValue={client.Additional} placeholder="Введіть додаткову інформацію"></Input>
           <button type="submit" onClick={addNewClient}>
             Зареєструвати
           </button>

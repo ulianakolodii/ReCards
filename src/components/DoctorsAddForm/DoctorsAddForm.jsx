@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputMainForm from "../InputMainForm/InputMainForm";
+import Input from "../Input/Input";
 import classes from "./style.module.css";
 
 const DoctorsAddForm = ({ create }) => {
@@ -31,13 +31,13 @@ const DoctorsAddForm = ({ create }) => {
         <form className={classes.mainForm}>
           <h1>Додати лікаря:</h1>
           <h3>Прізвище</h3>
-          <InputMainForm defaultValue={doctor.Surname} placeholder="Введіть прізвище лікаря"></InputMainForm>
+          <Input defaultValue={doctor.Surname} placeholder="Введіть прізвище лікаря"></Input>
           <h3>Ім'я</h3>
-          <InputMainForm defaultValue={doctor.Name} placeholder="Введіть ім'я лікаря"></InputMainForm>
+          <Input defaultValue={doctor.Name} placeholder="Введіть ім'я лікаря"></Input>
           <h3>По-батькові</h3>
-          <InputMainForm defaultValue={doctor.FathersName} placeholder="Введіть по-батькові лікаря"></InputMainForm>
+          <Input defaultValue={doctor.FathersName} placeholder="Введіть по-батькові лікаря"></Input>
           <h3>Додаткова інформація</h3>
-          <InputMainForm defaultValue={doctor.Additional} placeholder="Введіть додаткову інформацію"></InputMainForm>
+          <Input defaultValue={doctor.Additional} placeholder="Введіть додаткову інформацію"></Input>
           <button type="submit" onClick={addNewDoctor}>
             Додати
           </button>
