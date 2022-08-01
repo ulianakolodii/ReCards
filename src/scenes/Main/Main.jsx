@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Sidebar } from "../../components";
+import { Header } from "../../components";
 import { ReactComponent as PacientIcon } from "../../assets/icons/bed.svg";
+import { ReactComponent as DoctorIcon } from "../../assets/icons/user-doctor-solid.svg";
 import style from "./style.module.css";
 
 const changeActiveColor = ({ isActive }) => ({
@@ -11,12 +12,13 @@ const changeActiveColor = ({ isActive }) => ({
 export const Main = ({ children }) => {
   return (
     <div className={style.main}>
-      <Sidebar>
-        {/* <img src="../../logo.png" alt="logo" /> */}
+      <Header>
+        <NavLink to="/">
+          <img src="../../../logo.png" alt="logo" />
+        </NavLink>
         <ul>
           <li>
             <NavLink to="/add-pacient" style={changeActiveColor}>
-              <PacientIcon />
               Пацієнти
             </NavLink>
           </li>
@@ -26,8 +28,8 @@ export const Main = ({ children }) => {
             </NavLink>
           </li>
         </ul>
-      </Sidebar>
-      {children}
+      </Header>
+      <div className={style.container}>{children}</div>
     </div>
   );
 };

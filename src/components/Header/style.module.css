@@ -1,0 +1,36 @@
+.header {
+    background: var(--header-bg);
+    color: var(--header-color);
+    display: flex;
+    height: 62px;
+    align-items: center;
+}
+
+.header ul{
+    padding: 0;
+    margin: 0;
+    display: flex;
+    list-style: none;
+    gap: 16px;
+}
+
+.header ul li a {
+    text-decoration: none;
+    color: var(--header-color);
+    font-weight: 500;
+}
+
+.header > a > img {
+    width: 40px;
+    margin: 0 26px;
+}
+
+.header ul li a,
+.header > a {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.header ul li a:hover,
+.header > a:hover {
+    opacity: 0.8;
+}
