@@ -1,6 +1,10 @@
 :root {
-    --sidebar-bg: #fff;
-    --sidebar-color: #333;
+    --header-bg: #24292f;
+    --header-color: #fff;
+    --table-bg: #fff;
+    --table-border: #DFE5EB;
     --sidbar-hover-bg: rgba(255, 255, 255, 0.02);
     --content-bg: #f0f4f7;
+    --button-toolbar-bg: #116dff;
+    --button-toolbar-color: #fff;
 }

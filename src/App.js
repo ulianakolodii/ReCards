@@ -1,10 +1,10 @@
-import './App.css';
-import MainForm from './components/MainForm/MainForm';
+import "./App.css";
+import MainForm from "./components/MainForm/MainForm";
 
 function App() {
   return (
     <div className="reCards">
-<MainForm></MainForm>
+      <MainForm></MainForm>
     </div>
   );
 }

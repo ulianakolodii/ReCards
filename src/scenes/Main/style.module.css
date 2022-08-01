@@ -1,13 +1,16 @@
 .main {
     display: flex;
     height: 100vh;
-}
-
-.main > div:nth-child(1) {
-    width: 100px;
+    flex-direction: column;
 }
 
 .main > div:nth-child(2) {
     background-color: var(--content-bg);
     flex: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 40px;
 }
