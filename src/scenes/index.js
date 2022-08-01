@@ -1,2 +1,2 @@
 export * from "./Main";
-export * from "./PatientsTable";
+export * from "./PatientsTable/PatientsTable";
