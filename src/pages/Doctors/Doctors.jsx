@@ -3,7 +3,6 @@ import { PageLayout, Pagehead, Heading, Box, Button } from "@primer/react";
 import { NavLink } from "react-router-dom";
 import { Table } from "../../components";
 import { getAllDoctors, deleteDoctor } from "../../utils/db";
-import { ReactComponent as Empty } from "../../assets/icons/empty.svg";
 
 const columns = [
   { title: "Прізвище" },
@@ -76,7 +75,7 @@ export const Doctors = () => {
   }, [setDoctors, deletingID]);
 
   useEffect(() => {
-    // loadDoctors();
+    loadDoctors();
   }, [loadDoctors]);
   return (
     <PageLayout>
@@ -91,7 +90,6 @@ export const Doctors = () => {
         </Pagehead>
       </PageLayout.Header>
       <PageLayout.Content>
-        <Empty />
         <Table columns={columns} data={doctors}></Table>
       </PageLayout.Content>
     </PageLayout>
