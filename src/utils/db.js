@@ -61,12 +61,26 @@ export const getAllDoctors = () =>
       })
   );
 
-export const updateDoctor = (doctor = {}) =>
+export const getDoctorByID = (id) =>
   createDB().then(
     (db) =>
       new Promise((resolve) => {
         const transaction = db
           .transaction("doctors")
+          .objectStore("doctors")
+          .get(id);
+        transaction.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      })
+  );
+
+export const updateDoctor = (doctor = {}) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("doctors", "readwrite")
           .objectStore("doctors")
           .put(doctor);
         transaction.onsuccess = (event) => {

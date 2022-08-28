@@ -1,33 +1,34 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Header } from "../../components";
-import style from "./style.module.css";
-
-const changeActiveColor = ({ isActive }) => ({
-  backgroundColor: isActive ? "var(--sidbar-hover-bg)" : "inherit",
-});
+import { Header, Box } from "@primer/react";
 
 export const Main = ({ children }) => {
   return (
-    <div className={style.main}>
+    <div>
       <Header>
-        <NavLink to="/">
-          <img src="../../../logo.png" alt="logo" />
-        </NavLink>
-        <ul>
-          <li>
-            <NavLink to="/add-pacient" style={changeActiveColor}>
-              Пацієнти
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/add-doctor" style={changeActiveColor}>
-              Лікарі
-            </NavLink>
-          </li>
-        </ul>
+        <Header.Item>
+          <Header.Link href="/" fontSize={2}>
+            <Box
+              as="img"
+              src="../../../logo.png"
+              alt="Logo"
+              width={32}
+              height={32}
+            />
+          </Header.Link>
+        </Header.Item>
+        <Header.Item>
+          <Header.Link as={NavLink} to="/patients">
+            Пацієнти
+          </Header.Link>
+        </Header.Item>
+        <Header.Item>
+          <Header.Link as={NavLink} to="/doctors">
+            Лікарі
+          </Header.Link>
+        </Header.Item>
       </Header>
-      <div className={style.container}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 };
