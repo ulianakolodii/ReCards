@@ -51,7 +51,6 @@ export const getAllDoctors = () =>
   createDB().then(
     (db) =>
       new Promise((resolve) => {
-        debugger;
         const transaction = db
           .transaction("doctors")
           .objectStore("doctors")
@@ -66,7 +65,6 @@ export const updateDoctor = (doctor = {}) =>
   createDB().then(
     (db) =>
       new Promise((resolve) => {
-        debugger;
         const transaction = db
           .transaction("doctors")
           .objectStore("doctors")
@@ -109,7 +107,6 @@ export const getAllPatients = () =>
   createDB().then(
     (db) =>
       new Promise((resolve) => {
-        debugger;
         const transaction = db
           .transaction("patients")
           .objectStore("patients")
@@ -124,7 +121,6 @@ export const updatePatient = (patient = {}) =>
   createDB().then(
     (db) =>
       new Promise((resolve) => {
-        debugger;
         const transaction = db
           .transaction("patients")
           .objectStore("patients")

@@ -1,8 +1,8 @@
-
 :root {
-    --input-border-color: #a5c8ff;
-    --input-border-focus-color: #1966ec;
-    --input-outline-color: #9cb9fd;
-    --input-background-hover-color: #deebff;
-    --input-background-focus-color: white;
-  }
+  --input-border-color: #a5c8ff;
+  --input-border-focus-color: #1966ec;
+  --input-outline-color: #9cb9fd;
+  --input-background-hover-color: #deebff;
+  --input-background-focus-color: white;
+  --tag-background: #f0f4f7;
+}

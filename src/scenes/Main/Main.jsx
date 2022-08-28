@@ -1,8 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Header } from "../../components";
-import { ReactComponent as PacientIcon } from "../../assets/icons/bed.svg";
-import { ReactComponent as DoctorIcon } from "../../assets/icons/user-doctor-solid.svg";
 import style from "./style.module.css";
 
 const changeActiveColor = ({ isActive }) => ({
