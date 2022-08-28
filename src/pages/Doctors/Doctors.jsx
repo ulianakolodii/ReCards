@@ -75,7 +75,7 @@ export const Doctors = () => {
   }, [setDoctors, deletingID]);
 
   useEffect(() => {
-    loadDoctors();
+    // loadDoctors();
   }, [loadDoctors]);
   return (
     <PageLayout>
@@ -90,7 +90,24 @@ export const Doctors = () => {
         </Pagehead>
       </PageLayout.Header>
       <PageLayout.Content>
-        <Table columns={columns} data={doctors}></Table>
+        {doctors.length === 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Box as="img" src="empty.png" alt="Empty" />
+            <Heading as="h6" sx={{ fontSize: 24 }}>
+              Лікарі відсутні!
+            </Heading>
+          </Box>
+        )}
+        {doctors.length !== 0 && (
+          <Table columns={columns} data={doctors}></Table>
+        )}
       </PageLayout.Content>
     </PageLayout>
   );
