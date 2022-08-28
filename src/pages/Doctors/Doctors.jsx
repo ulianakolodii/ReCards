@@ -75,7 +75,7 @@ export const Doctors = () => {
   }, [setDoctors, deletingID]);
 
   useEffect(() => {
-    // loadDoctors();
+    loadDoctors();
   }, [loadDoctors]);
   return (
     <PageLayout>

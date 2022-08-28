@@ -89,6 +89,20 @@ export const updateDoctor = (doctor = {}) =>
       })
   );
 
+export const getPatientByID = (id) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("patients")
+          .objectStore("patients")
+          .get(id);
+        transaction.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      })
+  );
+
 export const addPatient = (data = {}) =>
   createDB().then(
     (db) =>
