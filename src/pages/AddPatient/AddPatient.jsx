@@ -23,9 +23,18 @@ export const AddPatient = () => {
       birthDate,
       additionalInfo,
       phoneNumber,
+      cardNumber,
     },
     setPatient,
-  ] = useState({ fathersName: "", firstName: "", lastName: "", birthDate: "" });
+  ] = useState({
+    fathersName: "",
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    additionalInfo: "",
+    phoneNumber: "",
+    cardNumber: "",
+  });
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -37,6 +46,7 @@ export const AddPatient = () => {
         birthDate,
         additionalInfo,
         phoneNumber,
+        cardNumber,
         id: parseInt(id, 10),
       }).then(() => navigate("/patients"));
     } else {
@@ -47,6 +57,7 @@ export const AddPatient = () => {
         birthDate,
         additionalInfo,
         phoneNumber,
+        cardNumber,
         timestamp: Date.now(),
       }).then(() => navigate("/patients"));
     }
@@ -125,6 +136,29 @@ export const AddPatient = () => {
               type="number"
               sx={{
                 width: "100%",
+                "& > input[type=number]::-webkit-inner-spin-button": {
+                  display: "none",
+                },
+                "& > input[type=number]::-webkit-outer-spin-button": {
+                  display: "none",
+                },
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControl.Label>Номер карти</FormControl.Label>
+            <TextInput
+              value={cardNumber}
+              onInput={createInputHandler("cardNumber")}
+              type="number"
+              sx={{
+                width: "100%",
+                "& > input[type=number]::-webkit-inner-spin-button": {
+                  display: "none",
+                },
+                "& > input[type=number]::-webkit-outer-spin-button": {
+                  display: "none",
+                },
               }}
             />
           </FormControl>

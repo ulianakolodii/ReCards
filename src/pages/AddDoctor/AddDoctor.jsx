@@ -99,6 +99,12 @@ export const AddDoctor = () => {
               type="number"
               sx={{
                 width: "100%",
+                "& > input[type=number]::-webkit-inner-spin-button": {
+                  display: "none",
+                },
+                "& > input[type=number]::-webkit-outer-spin-button": {
+                  display: "none",
+                },
               }}
             />
           </FormControl>
