@@ -38,7 +38,7 @@ export const AutocompleteWithTokens = ({
         id,
       });
       setAutocompleteItems(newlySelectedItems);
-      handleSelectedChange(newlySelectedItems);
+      handleSelectedChange(tokens.concat({ text: event.target.value, id }));
       setAutocompleteValue("");
       event.preventDefault();
     }
