@@ -56,7 +56,7 @@ export const AddDoctor = () => {
       <PageLayout.Header>
         <Pagehead>
           <Heading as="h2" sx={{ fontSize: 24 }}>
-            Додати лікаря
+            {id ? "Редагувати лікаря" : "Додати лікаря"}
           </Heading>
         </Pagehead>
       </PageLayout.Header>
