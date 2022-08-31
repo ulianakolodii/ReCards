@@ -8,6 +8,7 @@ import { ThemeProvider } from "@primer/react";
 import { AddPatient } from "./pages/AddPatient";
 import { AddDoctor } from "./pages/AddDoctor";
 import { Doctors } from "./pages/Doctors";
+import { Patients } from "./pages/Patients";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,7 +22,7 @@ root.render(
           <Route path="edit-doctor/:id" element={<AddDoctor />} />
           <Route path="add-patient" element={<AddPatient />} />
           <Route path="edit-patient/:id" element={<AddPatient />} />
-          <Route path="invoices" element={<div>Hello 2</div>} />
+          <Route path="/patients" element={<Patients />} />
         </Routes>
       </Main>
     </BrowserRouter>
