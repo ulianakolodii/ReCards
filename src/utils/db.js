@@ -145,6 +145,21 @@ export const getAllPatients = () =>
       })
   );
 
+export const getAllTags = () =>
+  getAllPatients().then((patients) =>
+    patients.reduce(
+      (accumulator, patient) => accumulator.concat(patient.tags),
+      []
+    )
+  );
+
+export const getAllUniqueTags = () =>
+  getAllTags().then((tags) =>
+    Object.values(
+      tags.reduce((accumulator, tag) => ({ ...accumulator, [tag.id]: tag }), {})
+    )
+  );
+
 export const updatePatient = (patient = {}) =>
   createDB().then(
     (db) =>

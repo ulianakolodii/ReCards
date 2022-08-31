@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import { Autocomplete, TextInputWithTokens, Box, Text } from "@primer/react";
-import { v4 as uuid } from "uuid";
+import { hash } from "../../utils";
 
 export const AutocompleteWithTokens = ({
   value = [],
   onChange = () => {},
   initialTokens = [
-    { text: "Внутрішньо переміщена особа", id: 0 },
-    { text: "Війсковослужбовець", id: 1 },
+    { text: "Внутрішньо переміщена особа", id: "dosLsM" },
+    { text: "Війсковослужбовець", id: "eXufkm" },
   ],
 }) => {
-  const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [autocompleteValue, setAutocompleteValue] = useState("");
   const [autocompleteItems, setAutocompleteItems] = useState(initialTokens);
   const onTokenRemove = (tokenId) => {
     onChange({
       target: { value: value.filter((token) => token.id !== tokenId) },
     });
-    setSelectedItemIds(selectedItemIds.filter((id) => id !== tokenId));
   };
   const handleSelectedChange = (newlySelectedItems) => {
     if (!Array.isArray(newlySelectedItems)) {
       return;
     }
-    setSelectedItemIds(newlySelectedItems.map((item) => item.id));
     onChange({
       target: {
         value: newlySelectedItems.map(({ id, text }) => ({ id, text })),
@@ -39,7 +36,7 @@ export const AutocompleteWithTokens = ({
         (item) => item.text.trim() === event.target.value.trim()
       )
     ) {
-      const id = uuid();
+      const id = hash(event.target.value);
       const newlySelectedItems = autocompleteItems.concat({
         text: event.target.value,
         id,
@@ -77,7 +74,7 @@ export const AutocompleteWithTokens = ({
             </Box>
           }
           items={autocompleteItems}
-          selectedItemIds={selectedItemIds}
+          selectedItemIds={value.map((el) => el.id)}
           onSelectedChange={handleSelectedChange}
           selectionVariant="multiple"
         />

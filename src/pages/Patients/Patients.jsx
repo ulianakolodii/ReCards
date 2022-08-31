@@ -92,7 +92,7 @@ export const Patients = () => {
           <Heading as="h2" sx={{ fontSize: 24 }}>
             Пацієнти
           </Heading>
-          <Button as={NavLink} to="/add-doctor">
+          <Button as={NavLink} to="/add-patient">
             Додати пацієнта
           </Button>
         </Pagehead>

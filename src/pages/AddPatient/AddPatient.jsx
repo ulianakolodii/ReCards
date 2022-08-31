@@ -11,10 +11,16 @@ import {
 } from "@primer/react";
 import { AutocompleteWithTokens } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
-import { addPatient, updatePatient, getPatientByID } from "../../utils/db";
+import {
+  addPatient,
+  updatePatient,
+  getPatientByID,
+  getAllUniqueTags,
+} from "../../utils/db";
 
 export const AddPatient = () => {
   const { id } = useParams();
+  const [initialTokens, setInitialTokens] = useState();
   const [
     {
       fathersName,
@@ -80,6 +86,10 @@ export const AddPatient = () => {
       getPatientByID(parseInt(id, 10)).then(setPatient);
     }
   }, [setPatient, id]);
+
+  useEffect(() => {
+    getAllUniqueTags().then(setInitialTokens);
+  }, [setInitialTokens]);
 
   return (
     <PageLayout>
@@ -168,10 +178,18 @@ export const AddPatient = () => {
           </FormControl>
           <FormControl>
             <FormControl.Label>Мітки</FormControl.Label>
-            <AutocompleteWithTokens
-              value={tags}
-              onChange={createInputHandler("tags")}
-            />
+            {initialTokens ? (
+              <AutocompleteWithTokens
+                value={tags}
+                onChange={createInputHandler("tags")}
+                initialTokens={initialTokens}
+              />
+            ) : (
+              <TextInput
+                disabled
+                sx={{ width: "100%", boxSizing: "border-box" }}
+              />
+            )}
           </FormControl>
           <FormControl>
             <FormControl.Label>Додаткова інформація</FormControl.Label>
