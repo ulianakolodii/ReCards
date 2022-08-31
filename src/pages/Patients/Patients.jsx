@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { PageLayout, Pagehead, Heading, Box, Button } from "@primer/react";
+import {
+  PageLayout,
+  Pagehead,
+  Heading,
+  Box,
+  Button,
+  Token,
+} from "@primer/react";
 import { NavLink } from "react-router-dom";
 import { Table } from "../../components";
 import { getAllPatients, deletePatient } from "../../utils/db";
@@ -25,7 +32,11 @@ const mapToTable =
       patient.birthDate,
       patient.phoneNumber,
       patient.cardNumber,
-      JSON.stringify(patient.tags),
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        {patient.tags.map((tag) => (
+          <Token key={tag.id} text={tag.text} />
+        ))}
+      </Box>,
       patient.additionalInfo,
       deletingID === patient.id ? (
         <Box
