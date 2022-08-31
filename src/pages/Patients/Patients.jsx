@@ -9,7 +9,13 @@ import {
 } from "@primer/react";
 import { NavLink } from "react-router-dom";
 import { Table } from "../../components";
-import { getAllPatients, deletePatient } from "../../utils/db";
+import {
+  getAllPatients,
+  deletePatient,
+  getAllUniqueTags,
+} from "../../utils/db";
+import { toggleQuery, hasQuery } from "../../utils";
+import { useQuery } from "../../hooks";
 
 const columns = [
   { title: "Прізвище" },
@@ -34,7 +40,16 @@ const mapToTable =
       patient.cardNumber,
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
         {patient.tags.map((tag) => (
-          <Token key={tag.id} text={tag.text} />
+          <Token
+            sx={{
+              cursor: "pointer",
+            }}
+            isSelected={hasQuery(tag.id)}
+            as={NavLink}
+            key={tag.id}
+            text={tag.text}
+            to={`/patients?${toggleQuery(tag.id)}`}
+          />
         ))}
       </Box>,
       patient.additionalInfo,
@@ -73,36 +88,69 @@ const mapToTable =
     ]);
 
 export const Patients = () => {
+  const query = useQuery();
   const [doctors, setDoctors] = useState([]);
   const [deletingID, setDeletingID] = useState();
+  const [tags, setTags] = useState();
 
-  const loadDoctors = useCallback(() => {
+  const loadItems = useCallback(() => {
     const createDeletingHandler = (id) => () => {
       setDeletingID(id);
     };
 
     const createDeleteHandler = (id) => () => {
       deletePatient(id).then(() => {
-        loadDoctors();
+        loadItems();
       });
     };
+    const tags = query.getAll("tag");
     return getAllPatients()
+      .then((result) =>
+        result.filter((tag) => {
+          if (
+            tags.length === 0 ||
+            (tag.tags || []).some(({ id }) => tags.includes(id))
+          ) {
+            return true;
+          }
+          return false;
+        })
+      )
       .then(mapToTable(deletingID, createDeletingHandler, createDeleteHandler))
       .then((result) => {
         setDoctors(result);
       });
-  }, [setDoctors, deletingID]);
+  }, [setDoctors, deletingID, query]);
 
   useEffect(() => {
-    loadDoctors();
-  }, [loadDoctors]);
+    loadItems();
+  }, [loadItems]);
+
+  useEffect(() => {
+    getAllUniqueTags().then(setTags);
+  }, [setTags]);
   return (
     <PageLayout>
       <PageLayout.Header>
         <Pagehead sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Heading as="h2" sx={{ fontSize: 24 }}>
-            Пацієнти
-          </Heading>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Heading as="h2" sx={{ fontSize: 24 }}>
+              Пацієнти
+            </Heading>
+            {tags &&
+              tags.map((tag) => (
+                <Token
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  isSelected={hasQuery(tag.id)}
+                  as={NavLink}
+                  key={tag.id}
+                  text={tag.text}
+                  to={`/patients?${toggleQuery(tag.id)}`}
+                />
+              ))}
+          </Box>
           <Button as={NavLink} to="/add-patient">
             Додати пацієнта
           </Button>
