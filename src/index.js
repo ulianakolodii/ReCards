@@ -20,6 +20,7 @@ root.render(
           <Route path="add-doctor" element={<AddDoctor />} />
           <Route path="edit-doctor/:id" element={<AddDoctor />} />
           <Route path="add-patient" element={<AddPatient />} />
+          <Route path="edit-patient/:id" element={<AddPatient />} />
           <Route path="invoices" element={<div>Hello 2</div>} />
         </Routes>
       </Main>

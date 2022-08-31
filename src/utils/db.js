@@ -150,7 +150,7 @@ export const updatePatient = (patient = {}) =>
     (db) =>
       new Promise((resolve) => {
         const transaction = db
-          .transaction("patients")
+          .transaction("patients", "readwrite")
           .objectStore("patients")
           .put(patient);
         transaction.onsuccess = (event) => {

@@ -86,7 +86,7 @@ export const AddPatient = () => {
       <PageLayout.Header>
         <Pagehead>
           <Heading as="h2" sx={{ fontSize: 24 }}>
-            Зареєструвати пацієнта
+            {id ? "Редагувати пацієнта" : "Зареєструвати пацієнта"}
           </Heading>
         </Pagehead>
       </PageLayout.Header>
