@@ -3,17 +3,20 @@ import { Autocomplete, TextInputWithTokens, Box, Text } from "@primer/react";
 import { v4 as uuid } from "uuid";
 
 export const AutocompleteWithTokens = ({
+  value = [],
+  onChange = () => {},
   initialTokens = [
     { text: "Внутрішньо переміщена особа", id: 0 },
     { text: "Війсковослужбовець", id: 1 },
   ],
 }) => {
-  const [tokens, setTokens] = useState([]);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [autocompleteValue, setAutocompleteValue] = useState("");
   const [autocompleteItems, setAutocompleteItems] = useState(initialTokens);
   const onTokenRemove = (tokenId) => {
-    setTokens(tokens.filter((token) => token.id !== tokenId));
+    onChange({
+      target: { value: value.filter((token) => token.id !== tokenId) },
+    });
     setSelectedItemIds(selectedItemIds.filter((id) => id !== tokenId));
   };
   const handleSelectedChange = (newlySelectedItems) => {
@@ -21,7 +24,11 @@ export const AutocompleteWithTokens = ({
       return;
     }
     setSelectedItemIds(newlySelectedItems.map((item) => item.id));
-    setTokens(newlySelectedItems.map(({ id, text }) => ({ id, text })));
+    onChange({
+      target: {
+        value: newlySelectedItems.map(({ id, text }) => ({ id, text })),
+      },
+    });
   };
 
   const handleTokenKeyDown = (event) => {
@@ -38,7 +45,7 @@ export const AutocompleteWithTokens = ({
         id,
       });
       setAutocompleteItems(newlySelectedItems);
-      handleSelectedChange(tokens.concat({ text: event.target.value, id }));
+      handleSelectedChange(value.concat({ text: event.target.value, id }));
       setAutocompleteValue("");
       event.preventDefault();
     }
@@ -53,7 +60,7 @@ export const AutocompleteWithTokens = ({
       <Autocomplete.Input
         sx={{ width: "100%", boxSizing: "border-box" }}
         as={TextInputWithTokens}
-        tokens={tokens}
+        tokens={value}
         onTokenRemove={onTokenRemove}
         onKeyDown={handleTokenKeyDown}
         value={autocompleteValue}

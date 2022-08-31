@@ -24,6 +24,7 @@ export const AddPatient = () => {
       additionalInfo,
       phoneNumber,
       cardNumber,
+      tags,
     },
     setPatient,
   ] = useState({
@@ -34,6 +35,7 @@ export const AddPatient = () => {
     additionalInfo: "",
     phoneNumber: "",
     cardNumber: "",
+    tags: [],
   });
   const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ export const AddPatient = () => {
         additionalInfo,
         phoneNumber,
         cardNumber,
+        tags,
         id: parseInt(id, 10),
       }).then(() => navigate("/patients"));
     } else {
@@ -58,6 +61,7 @@ export const AddPatient = () => {
         additionalInfo,
         phoneNumber,
         cardNumber,
+        tags,
         timestamp: Date.now(),
       }).then(() => navigate("/patients"));
     }
@@ -164,7 +168,10 @@ export const AddPatient = () => {
           </FormControl>
           <FormControl>
             <FormControl.Label>Мітки</FormControl.Label>
-            <AutocompleteWithTokens />
+            <AutocompleteWithTokens
+              value={tags}
+              onChange={createInputHandler("tags")}
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label>Додаткова інформація</FormControl.Label>
