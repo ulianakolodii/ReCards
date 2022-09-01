@@ -109,7 +109,9 @@ export const Patients = () => {
         result.filter((tag) => {
           if (
             tags.length === 0 ||
-            (tag.tags || []).some(({ id }) => tags.includes(id))
+            tags.every((id) =>
+              (tag.tags || []).map(({ id }) => id).includes(id)
+            )
           ) {
             return true;
           }
