@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Box } from "@primer/react";
 import { hashItOrOriginal } from "../../utils";
+import { ReactComponent as ChevronDown } from "../../assets/icons/chevron-down.svg";
+import { ReactComponent as ChevronUp } from "../../assets/icons/chevron-up.svg";
 
-export const Table = ({ columns, data }) => {
+export const Table = ({
+  columns,
+  data,
+  onToggleSort = () => {},
+  order,
+  orderBy,
+}) => {
+  const createHandleToggleSort = useCallback(
+    (id) => {
+      return () => onToggleSort(id);
+    },
+    [onToggleSort]
+  );
   return (
     <Box
       as="table"
@@ -30,7 +44,30 @@ export const Table = ({ columns, data }) => {
                   },
                 }}
               >
-                {col.title}
+                {col.sortable ? (
+                  <Box
+                    onClick={createHandleToggleSort(col.id)}
+                    sx={{
+                      cursor: "pointer",
+                      position: "relative",
+                      userSelect: "none",
+                      "& > svg": {
+                        position: "absolute",
+                        top: "50%",
+                        marginTop: "-5px",
+                        width: 10,
+                        minWidth: 10,
+                        right: "-12px",
+                      },
+                    }}
+                  >
+                    {col.title}
+                    {orderBy === col.id && order && <ChevronDown />}
+                    {orderBy === col.id && !order && <ChevronUp />}
+                  </Box>
+                ) : (
+                  <Box>{col.title}</Box>
+                )}
               </Box>
             );
           })}

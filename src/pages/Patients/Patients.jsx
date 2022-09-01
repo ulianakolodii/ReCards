@@ -18,14 +18,14 @@ import { toggleQuery, hasQuery } from "../../utils";
 import { useQuery } from "../../hooks";
 
 const columns = [
-  { title: "Прізвище" },
-  { title: "Ім'я" },
-  { title: "По-батькові" },
-  { title: "Дата народження" },
-  { title: "Номер телефону" },
-  { title: "Номер карти" },
+  { id: "lastName", title: "Прізвище", sortable: true },
+  { id: "firstName", title: "Ім'я", sortable: true },
+  { id: "fathersName", title: "По-батькові", sortable: true },
+  { id: "birthDate", title: "Дата народження", sortable: true },
+  { id: "phoneNumber", title: "Номер телефону", sortable: true },
+  { id: "cardNumber", title: "Номер карти", sortable: true },
   { title: "Мітки" },
-  { title: "Додаткова інформація" },
+  { id: "additionalInfo", title: "Додаткова інформація", sortable: true },
   { title: "" },
 ];
 
@@ -92,6 +92,17 @@ export const Patients = () => {
   const [doctors, setDoctors] = useState([]);
   const [deletingID, setDeletingID] = useState();
   const [tags, setTags] = useState();
+  const [orderBy, setOrderBy] = useState();
+  const [order, setOrder] = useState(true);
+
+  const handleToggleSort = (id) => {
+    if (orderBy === id) {
+      setOrder((prev) => !prev);
+    } else {
+      setOrderBy(id);
+      setOrder(true);
+    }
+  };
 
   const loadItems = useCallback(() => {
     const createDeletingHandler = (id) => () => {
@@ -118,11 +129,22 @@ export const Patients = () => {
           return false;
         })
       )
+      .then((items) => {
+        if (!orderBy) {
+          return items;
+        }
+        return items.sort((a, b) => {
+          if (order) {
+            return (b?.[orderBy] || "").localeCompare(a?.[orderBy] || "");
+          }
+          return (a?.[orderBy] || "").localeCompare(b?.[orderBy] || "");
+        });
+      })
       .then(mapToTable(deletingID, createDeletingHandler, createDeleteHandler))
       .then((result) => {
         setDoctors(result);
       });
-  }, [setDoctors, deletingID, query]);
+  }, [setDoctors, deletingID, query, order, orderBy]);
 
   useEffect(() => {
     loadItems();
@@ -174,7 +196,15 @@ export const Patients = () => {
             </Heading>
           </Box>
         )}
-        {doctors.length !== 0 && <Table columns={columns} data={doctors} />}
+        {doctors.length !== 0 && (
+          <Table
+            columns={columns}
+            data={doctors}
+            onToggleSort={handleToggleSort}
+            order={order}
+            orderBy={orderBy}
+          />
+        )}
       </PageLayout.Content>
     </PageLayout>
   );
