@@ -173,3 +173,73 @@ export const updatePatient = (patient = {}) =>
         };
       })
   );
+
+export const addVisit = (data = {}) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("visits", "readwrite")
+          .objectStore("visits")
+          .add(data);
+        transaction.onsuccess = (event) => {
+          resolve(event);
+        };
+      })
+  );
+
+export const deleteVisit = (id) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("visits", "readwrite")
+          .objectStore("visits")
+          .delete(id);
+        transaction.onsuccess = (event) => {
+          resolve(event);
+        };
+      })
+  );
+
+export const getAllVisits = () =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("visits")
+          .objectStore("visits")
+          .getAll();
+        transaction.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      })
+  );
+
+export const getVisitByID = (id) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("visits")
+          .objectStore("visits")
+          .get(id);
+        transaction.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      })
+  );
+
+export const updateVisit = (doctor = {}) =>
+  createDB().then(
+    (db) =>
+      new Promise((resolve) => {
+        const transaction = db
+          .transaction("visits", "readwrite")
+          .objectStore("visits")
+          .put(doctor);
+        transaction.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      })
+  );
