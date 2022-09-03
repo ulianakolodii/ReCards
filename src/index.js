@@ -23,6 +23,9 @@ root.render(
           <Route path="add-patient" element={<AddPatient />} />
           <Route path="edit-patient/:id" element={<AddPatient />} />
           <Route path="/patients" element={<Patients />} />
+          <Route path="/visits" element={<div>visits</div>} />
+          <Route path="add-visits" element={<div>visits</div>} />
+          <Route path="edit-visits/:id" element={<div>visits</div>} />
         </Routes>
       </Main>
     </BrowserRouter>
