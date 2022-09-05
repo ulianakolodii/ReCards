@@ -9,6 +9,7 @@ import { AddPatient } from "./pages/AddPatient";
 import { AddDoctor } from "./pages/AddDoctor";
 import { Doctors } from "./pages/Doctors";
 import { Patients } from "./pages/Patients";
+import { AddVisit } from "./pages/AddVisit";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,8 +25,8 @@ root.render(
           <Route path="edit-patient/:id" element={<AddPatient />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/visits" element={<div>visits</div>} />
-          <Route path="add-visits" element={<div>visits</div>} />
-          <Route path="edit-visits/:id" element={<div>visits</div>} />
+          <Route path="add-visit" element={<AddVisit />} />
+          <Route path="edit-visit/:id" element={<AddVisit />} />
         </Routes>
       </Main>
     </BrowserRouter>

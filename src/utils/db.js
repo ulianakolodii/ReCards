@@ -1,18 +1,30 @@
 export const createDB = () =>
   new Promise((resolve, reject) => {
-    const openRequest = indexedDB.open("uliana", 1);
+    const openRequest = indexedDB.open("uliana", 2);
     openRequest.onerror = () => {
       reject(openRequest);
     };
     openRequest.onupgradeneeded = (event) => {
-      event.target.result.createObjectStore("doctors", {
-        keyPath: "id",
-        autoIncrement: true,
-      });
-      event.target.result.createObjectStore("patients", {
-        keyPath: "id",
-        autoIncrement: true,
-      });
+      const db = event.target.result;
+      console.log("db", db);
+      if (!db.objectStoreNames.contains("doctors")) {
+        db.createObjectStore("doctors", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
+      if (!db.objectStoreNames.contains("patients")) {
+        db.createObjectStore("patients", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
+      if (!db.objectStoreNames.contains("visits")) {
+        db.createObjectStore("visits", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
     };
     openRequest.onsuccess = (event) => {
       resolve(event.target.result);
