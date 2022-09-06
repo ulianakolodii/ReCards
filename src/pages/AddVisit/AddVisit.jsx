@@ -42,20 +42,14 @@ export const AddVisit = () => {
       updateVisit({
         doctor,
         patient,
-        dateTime,
+        dateTime: Date.parse(dateTime),
         id: parseInt(id, 10),
       }).then(() => navigate("/visits"));
     } else {
-      console.log("add", {
-        doctor,
-        patient,
-        dateTime,
-        timestamp: Date.now(),
-      });
       addVisit({
         doctor,
         patient,
-        dateTime,
+        dateTime: Date.parse(dateTime),
         timestamp: Date.now(),
       }).then(() => navigate("/visits"));
     }
