@@ -7,7 +7,7 @@ export const Main = ({ children }) => {
     <div>
       <Header>
         <Header.Item>
-          <Header.Link href="/" fontSize={2}>
+          <Header.Link as={NavLink} to="/visits" fontSize={2}>
             <Box
               as="img"
               src="../../../logo.png"
@@ -15,6 +15,11 @@ export const Main = ({ children }) => {
               width={32}
               height={32}
             />
+          </Header.Link>
+        </Header.Item>
+        <Header.Item>
+          <Header.Link as={NavLink} to="/visits">
+            Візити
           </Header.Link>
         </Header.Item>
         <Header.Item>
