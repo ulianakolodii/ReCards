@@ -28,28 +28,20 @@ export const AutocompleteWithTokens = ({
     });
   };
 
-  const handleTokenKeyDown = (event) => {
-    if (
-      event.key === "Enter" &&
-      event.target.value?.trim() !== "" &&
-      !autocompleteItems.find(
-        (item) => item.text.trim() === event.target.value.trim()
-      )
-    ) {
-      const id = hash(event.target.value);
-      const newlySelectedItems = autocompleteItems.concat({
-        text: event.target.value,
-        id,
-      });
-      setAutocompleteItems(newlySelectedItems);
-      handleSelectedChange(value.concat({ text: event.target.value, id }));
-      setAutocompleteValue("");
-      event.preventDefault();
-    }
-  };
-
   const handleInput = (event) => {
     setAutocompleteValue(event.target.value);
+  };
+
+  const handleAddItem = () => {
+    const id = hash(autocompleteValue);
+    const newlySelectedItems = autocompleteItems.concat({
+      text: autocompleteValue,
+      id,
+      selected: true,
+    });
+    setAutocompleteItems(newlySelectedItems);
+    handleSelectedChange(value.concat({ text: autocompleteValue, id }));
+    setAutocompleteValue("");
   };
 
   return (
@@ -59,7 +51,6 @@ export const AutocompleteWithTokens = ({
         as={TextInputWithTokens}
         tokens={value}
         onTokenRemove={onTokenRemove}
-        onKeyDown={handleTokenKeyDown}
         value={autocompleteValue}
         onInput={handleInput}
       />
@@ -77,6 +68,17 @@ export const AutocompleteWithTokens = ({
           selectedItemIds={value.map((el) => el.id)}
           onSelectedChange={handleSelectedChange}
           selectionVariant="multiple"
+          addNewItem={
+            autocompleteValue &&
+            !autocompleteItems.find(
+              (item) => item.text.trim() === autocompleteValue
+            )
+              ? {
+                  text: `Додати ще одну мітку "${autocompleteValue}"`,
+                  handleAddItem,
+                }
+              : undefined
+          }
         />
       </Autocomplete.Overlay>
     </Autocomplete>
