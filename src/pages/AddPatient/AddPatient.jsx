@@ -111,7 +111,7 @@ export const AddPatient = () => {
             <TextInput
               value={lastName}
               onInput={createInputHandler("lastName")}
-              sx={{ width: "100%" }}
+              block
               autoFocus
             />
           </FormControl>
@@ -120,7 +120,7 @@ export const AddPatient = () => {
             <TextInput
               value={firstName}
               onInput={createInputHandler("firstName")}
-              sx={{ width: "100%" }}
+              block
             />
           </FormControl>
           <FormControl required>
@@ -128,7 +128,7 @@ export const AddPatient = () => {
             <TextInput
               value={fathersName}
               onInput={createInputHandler("fathersName")}
-              sx={{ width: "100%" }}
+              block
             />
           </FormControl>
           <FormControl>
@@ -196,9 +196,7 @@ export const AddPatient = () => {
             <Textarea
               value={additionalInfo}
               onInput={createInputHandler("additionalInfo")}
-              sx={{
-                width: "100%",
-              }}
+              block
             />
           </FormControl>
           <Box>

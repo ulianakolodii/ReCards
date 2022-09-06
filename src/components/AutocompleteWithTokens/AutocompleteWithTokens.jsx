@@ -54,7 +54,7 @@ export const AutocompleteWithTokens = ({
         value={autocompleteValue}
         onInput={handleInput}
       />
-      <Autocomplete.Overlay sx={{ minWidth: 300 }}>
+      <Autocomplete.Overlay width="xxlarge">
         <Autocomplete.Menu
           emptyStateText={
             <Box sx={{ display: "flex", flexDirection: "column" }}>

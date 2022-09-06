@@ -71,7 +71,7 @@ export const AddDoctor = () => {
             <TextInput
               value={lastName}
               onInput={createInputHandler("lastName")}
-              sx={{ width: "100%" }}
+              block
               autoFocus
             />
           </FormControl>
@@ -80,7 +80,7 @@ export const AddDoctor = () => {
             <TextInput
               value={firstName}
               onInput={createInputHandler("firstName")}
-              sx={{ width: "100%" }}
+              block
             />
           </FormControl>
           <FormControl required>
@@ -88,7 +88,7 @@ export const AddDoctor = () => {
             <TextInput
               value={fathersName}
               onInput={createInputHandler("fathersName")}
-              sx={{ width: "100%" }}
+              block
             />
           </FormControl>
           <FormControl>
@@ -97,8 +97,8 @@ export const AddDoctor = () => {
               value={phoneNumber}
               onInput={createInputHandler("phoneNumber")}
               type="number"
+              block
               sx={{
-                width: "100%",
                 "& > input[type=number]::-webkit-inner-spin-button": {
                   display: "none",
                 },
