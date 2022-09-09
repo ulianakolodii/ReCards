@@ -1,5 +1,19 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { PageLayout, Pagehead, Heading, Box, Button } from "@primer/react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useTransition,
+  useMemo,
+} from "react";
+import {
+  PageLayout,
+  Pagehead,
+  Heading,
+  Box,
+  Button,
+  TextInput,
+} from "@primer/react";
+import { SearchIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { Table } from "../../components";
 import { getAllDoctors, deleteDoctor } from "../../utils/db";
@@ -56,6 +70,26 @@ const mapToTable =
 export const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [deletingID, setDeletingID] = useState();
+  const [filterValue, setFilterValue] = useState("");
+  const [, startTransition] = useTransition();
+
+  const handleFilterInput = (event) => {
+    startTransition(() => {
+      setFilterValue(event.target.value);
+    });
+  };
+
+  const filteredItems = useMemo(
+    () =>
+      doctors.filter(
+        ([lastName, firstName, fathersName, phoneNumber]) =>
+          lastName.includes(filterValue) ||
+          firstName.includes(filterValue) ||
+          fathersName.includes(filterValue) ||
+          phoneNumber.includes(filterValue)
+      ),
+    [doctors, filterValue]
+  );
 
   const loadDoctors = useCallback(() => {
     const createDeletingHandler = (id) => () => {
@@ -81,16 +115,25 @@ export const Doctors = () => {
     <PageLayout>
       <PageLayout.Header>
         <Pagehead sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Heading as="h2" sx={{ fontSize: 24 }}>
-            Лікарі
-          </Heading>
+          <Box sx={{ display: "flex", gap: 3 }}>
+            <Heading as="h2" sx={{ fontSize: 24 }}>
+              Лікарі
+            </Heading>
+            <TextInput
+              onInput={handleFilterInput}
+              value={filterValue}
+              leadingVisual={SearchIcon}
+              placeholder="Пошук"
+              sx={{ minWidth: 250 }}
+            />
+          </Box>
           <Button as={NavLink} to="/add-doctor">
             Додати лікаря
           </Button>
         </Pagehead>
       </PageLayout.Header>
       <PageLayout.Content>
-        {doctors.length === 0 && (
+        {filteredItems.length === 0 && (
           <Box
             sx={{
               display: "flex",
@@ -105,8 +148,8 @@ export const Doctors = () => {
             </Heading>
           </Box>
         )}
-        {doctors.length !== 0 && (
-          <Table columns={columns} data={doctors}></Table>
+        {filteredItems.length !== 0 && (
+          <Table columns={columns} data={filteredItems}></Table>
         )}
       </PageLayout.Content>
     </PageLayout>

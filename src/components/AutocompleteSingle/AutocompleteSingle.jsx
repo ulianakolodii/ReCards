@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Autocomplete, TextInput } from "@primer/react";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
@@ -9,9 +9,7 @@ export const AutocompleteSingle = ({
   value = "",
   onChange = () => {},
 }) => {
-  const { inputValue = value, setInputValue } = useContext(
-    Autocomplete.Context
-  );
+  const [inputValue, setInputValue] = useState(value);
 
   const itemsSet = useMemo(
     () => new Set(items.map(({ text }) => text)),
@@ -36,8 +34,11 @@ export const AutocompleteSingle = ({
       <Autocomplete.Input
         required
         block
-        value={inputValue}
         validationStatus={validationStatus}
+        value={inputValue}
+        onInput={(e) => {
+          setInputValue(e.target.value);
+        }}
         trailingAction={
           inputValue && (
             <TextInput.Action

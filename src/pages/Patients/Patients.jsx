@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useTransition,
+} from "react";
 import {
   PageLayout,
   Pagehead,
@@ -6,7 +12,10 @@ import {
   Box,
   Button,
   Token,
+  TextInput,
+  Text,
 } from "@primer/react";
+import { SearchIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { Table } from "../../components";
 import {
@@ -94,6 +103,8 @@ export const Patients = () => {
   const [tags, setTags] = useState();
   const [orderBy, setOrderBy] = useState();
   const [order, setOrder] = useState(true);
+  const [filterValue, setFilterValue] = useState("");
+  const [, startTransition] = useTransition();
 
   const handleToggleSort = (id) => {
     if (orderBy === id) {
@@ -146,6 +157,33 @@ export const Patients = () => {
       });
   }, [setDoctors, deletingID, query, order, orderBy]);
 
+  const handleFilterInput = (event) => {
+    startTransition(() => {
+      setFilterValue(event.target.value);
+    });
+  };
+
+  const filteredItems = useMemo(
+    () =>
+      doctors.filter(
+        ([
+          lastName,
+          firstName,
+          fathersName,
+          birthDate,
+          phoneNumber,
+          cardNumber,
+        ]) =>
+          lastName.includes(filterValue) ||
+          firstName.includes(filterValue) ||
+          fathersName.includes(filterValue) ||
+          birthDate.includes(filterValue) ||
+          phoneNumber.includes(filterValue) ||
+          cardNumber.includes(filterValue)
+      ),
+    [doctors, filterValue]
+  );
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -158,30 +196,42 @@ export const Patients = () => {
       <PageLayout.Header>
         <Pagehead sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Heading as="h2" sx={{ fontSize: 24 }}>
-              Пацієнти
-            </Heading>
-            {tags &&
-              tags.map((tag) => (
-                <Token
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                  isSelected={hasQuery(tag.id)}
-                  as={NavLink}
-                  key={tag.id}
-                  text={tag.text}
-                  to={`/patients?${toggleQuery(tag.id)}`}
-                />
-              ))}
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <Heading as="h2" sx={{ fontSize: 24 }}>
+                Пацієнти
+              </Heading>
+              <TextInput
+                onInput={handleFilterInput}
+                value={filterValue}
+                leadingVisual={SearchIcon}
+                placeholder="Пошук"
+                sx={{ minWidth: 250 }}
+              />
+            </Box>
           </Box>
           <Button as={NavLink} to="/add-patient">
             Додати пацієнта
           </Button>
         </Pagehead>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Text sx={{ fontWeight: "bold" }}>Мітки:</Text>
+          {tags &&
+            tags.map((tag) => (
+              <Token
+                sx={{
+                  cursor: "pointer",
+                }}
+                isSelected={hasQuery(tag.id)}
+                as={NavLink}
+                key={tag.id}
+                text={tag.text}
+                to={`/patients?${toggleQuery(tag.id)}`}
+              />
+            ))}
+        </Box>
       </PageLayout.Header>
       <PageLayout.Content>
-        {doctors.length === 0 && (
+        {filteredItems.length === 0 && (
           <Box
             sx={{
               display: "flex",
@@ -196,10 +246,10 @@ export const Patients = () => {
             </Heading>
           </Box>
         )}
-        {doctors.length !== 0 && (
+        {filteredItems.length !== 0 && (
           <Table
             columns={columns}
-            data={doctors}
+            data={filteredItems}
             onToggleSort={handleToggleSort}
             order={order}
             orderBy={orderBy}

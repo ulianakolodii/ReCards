@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   PageLayout,
@@ -14,8 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   addVisit,
   updateVisit,
-  getPatientByID,
-  getAllUniqueTags,
+  getVisitByID,
   getAllDoctors,
   getAllPatients,
 } from "../../utils/db";
@@ -71,11 +70,11 @@ export const AddVisit = () => {
     setVisit((prevVisit) => ({ ...prevVisit, patient: id }));
   };
 
-  // useEffect(() => {
-  //   if (id) {
-  //     getPatientByID(parseInt(id, 10)).then(setPatient);
-  //   }
-  // }, [setPatient, id]);
+  useEffect(() => {
+    if (id) {
+      getVisitByID(parseInt(id, 10)).then(setVisit);
+    }
+  }, [setVisit, id]);
 
   useEffect(() => {
     getAllDoctors()
