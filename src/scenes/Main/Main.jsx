@@ -7,7 +7,7 @@ export const Main = ({ children }) => {
     <div>
       <Header>
         <Header.Item>
-          <Header.Link as={NavLink} to="/visits" fontSize={2}>
+          <Header.Link as={NavLink} to="/" fontSize={2}>
             <Box
               as="img"
               src="../../../logo.png"
@@ -18,7 +18,7 @@ export const Main = ({ children }) => {
           </Header.Link>
         </Header.Item>
         <Header.Item>
-          <Header.Link as={NavLink} to="/visits">
+          <Header.Link as={NavLink} to="/">
             Візити
           </Header.Link>
         </Header.Item>

@@ -27,7 +27,7 @@ export const Table = ({
           {columns.map((col) => {
             return (
               <Box
-                key={col.title}
+                key={col.title || "empty"}
                 as="th"
                 sx={{
                   padding: "12px",
@@ -74,31 +74,28 @@ export const Table = ({
         </Box>
       </Box>
       <Box as="tbody">
-        {data?.map((row) => {
-          return (
-            <Box as="tr" key={hashItOrOriginal(JSON.stringify(row))}>
-              {row?.map((rowCol) => {
-                return (
-                  <Box
-                    as="td"
-                    sx={{
-                      padding: "12px",
-                      boxShadow: "inset 0 -1px 0 0 #DFE5EB",
-                      "&:first-child": {
-                        padding: "16px 12px 16px 24px",
-                      },
-                      "&:last-child": {
-                        padding: "16px 24px 16px 12px",
-                      },
-                    }}
-                  >
-                    {rowCol}
-                  </Box>
-                );
-              })}
-            </Box>
-          );
-        })}
+        {data?.map((row) => (
+          <Box as="tr" key={hashItOrOriginal(JSON.stringify(row))}>
+            {row?.map((rowCol) => (
+              <Box
+                key={hashItOrOriginal(`${JSON.stringify(row)}-${rowCol}`)}
+                as="td"
+                sx={{
+                  padding: "12px",
+                  boxShadow: "inset 0 -1px 0 0 #DFE5EB",
+                  "&:first-child": {
+                    padding: "16px 12px 16px 24px",
+                  },
+                  "&:last-child": {
+                    padding: "16px 24px 16px 12px",
+                  },
+                }}
+              >
+                {rowCol}
+              </Box>
+            ))}
+          </Box>
+        ))}
       </Box>
     </Box>
   );
