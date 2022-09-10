@@ -7,8 +7,6 @@ import React, {
 } from "react";
 import {
   PageLayout,
-  Pagehead,
-  Heading,
   Box,
   Button,
   TextInput,
@@ -19,13 +17,20 @@ import {
 import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { DoctorRow } from "../../components";
-import { getAllDoctors, deleteDoctor } from "../../utils/db";
+import { getAllDoctors, deleteDoctor, sortBy } from "../../utils";
 
 export const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [deletingID, setDeletingID] = useState();
   const [filterValue, setFilterValue] = useState("");
   const [, startTransition] = useTransition();
+  const [orderBy, setOrderBy] = useState("id");
+  const [order, setOrder] = useState(false);
+
+  const createHandleSort = (orderByColumn, orderType) => () => {
+    setOrderBy(orderByColumn);
+    setOrder(orderType);
+  };
 
   const handleFilterInput = (event) => {
     startTransition(() => {
@@ -35,14 +40,16 @@ export const Doctors = () => {
 
   const filteredItems = useMemo(
     () =>
-      doctors.filter(
-        ({ lastName, firstName, fathersName, phoneNumber }) =>
-          lastName.includes(filterValue) ||
-          firstName.includes(filterValue) ||
-          fathersName.includes(filterValue) ||
-          phoneNumber.includes(filterValue)
-      ),
-    [doctors, filterValue]
+      doctors
+        .sort(sortBy(order, orderBy))
+        .filter(
+          ({ lastName, firstName, fathersName, phoneNumber }) =>
+            lastName.includes(filterValue) ||
+            firstName.includes(filterValue) ||
+            fathersName.includes(filterValue) ||
+            phoneNumber.includes(filterValue)
+        ),
+    [doctors, filterValue, orderBy, order]
   );
 
   const loadDoctors = useCallback(() => {
@@ -122,27 +129,39 @@ export const Doctors = () => {
 
               <ActionMenu.Overlay width="medium">
                 <ActionList selectionVariant="single">
-                  <ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("id", true)}
+                    selected={order === true && orderBy === "id"}
+                  >
                     <ActionList.LeadingVisual>
                       <SortAscIcon />
                     </ActionList.LeadingVisual>
-                    За номером карти (зростання)
+                    За номером (зростання)
                   </ActionList.Item>
-                  <ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("id", false)}
+                    selected={order === false && orderBy === "id"}
+                  >
                     <ActionList.LeadingVisual>
                       <SortDescIcon />
                     </ActionList.LeadingVisual>
-                    За номером карти (спадання)
+                    За номером (спадання)
                   </ActionList.Item>
-                  <ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("lastName", false)}
+                    selected={order === false && orderBy === "lastName"}
+                  >
                     <ActionList.LeadingVisual>
-                      <SortDescIcon />
+                      <SortAscIcon />
                     </ActionList.LeadingVisual>
                     За прізвищем (А-Я)
                   </ActionList.Item>
-                  <ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("lastName", true)}
+                    selected={order === true && orderBy === "lastName"}
+                  >
                     <ActionList.LeadingVisual>
-                      <SortAscIcon />
+                      <SortDescIcon />
                     </ActionList.LeadingVisual>
                     За прізвищем (Я-А)
                   </ActionList.Item>

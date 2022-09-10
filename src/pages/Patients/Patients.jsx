@@ -23,7 +23,7 @@ import {
   deletePatient,
   getAllUniqueTags,
 } from "../../utils/db";
-import { toggleQuery, hasQuery, compare } from "../../utils";
+import { toggleQuery, hasQuery, sortBy, containsTags } from "../../utils";
 import { useQuery } from "../../hooks";
 
 export const Patients = () => {
@@ -55,41 +55,18 @@ export const Patients = () => {
     const handleCancelDelete = () => {
       setDeletingID(undefined);
     };
-    const tags = query.getAll("tag");
-    return getAllPatients()
-      .then((result) =>
-        result.filter((tag) => {
-          if (
-            tags.length === 0 ||
-            tags.every((id) =>
-              (tag.tags || []).map(({ id }) => id).includes(id)
-            )
-          ) {
-            return true;
-          }
-          return false;
-        })
+    return getAllPatients().then((items) =>
+      setPatients(
+        items.map((item) => ({
+          ...item,
+          deleting: item.id === deletingID,
+          onStartDelete: handleStartDelete,
+          onCancelDelete: handleCancelDelete,
+          onConfirmDelete: handleConfirmDelete,
+        }))
       )
-      .then((items) => {
-        return items.sort((a, b) => {
-          if (order) {
-            return compare(b?.[orderBy], a?.[orderBy]);
-          }
-          return compare(a?.[orderBy], b?.[orderBy]);
-        });
-      })
-      .then((items) =>
-        setPatients(
-          items.map((item) => ({
-            ...item,
-            deleting: item.id === deletingID,
-            onStartDelete: handleStartDelete,
-            onCancelDelete: handleCancelDelete,
-            onConfirmDelete: handleConfirmDelete,
-          }))
-        )
-      );
-  }, [setPatients, deletingID, query, order, orderBy]);
+    );
+  }, [setPatients, deletingID]);
 
   const handleFilterInput = (event) => {
     startTransition(() => {
@@ -97,9 +74,11 @@ export const Patients = () => {
     });
   };
 
-  const filteredItems = useMemo(
-    () =>
-      patients.filter(
+  const filteredItems = useMemo(() => {
+    return patients
+      .filter(containsTags(query.getAll("tag")))
+      .sort(sortBy(order, orderBy))
+      .filter(
         ({ lastName, firstName, fathersName, birthDate, phoneNumber, id }) =>
           lastName.includes(filterValue) ||
           firstName.includes(filterValue) ||
@@ -107,9 +86,8 @@ export const Patients = () => {
           birthDate.includes(filterValue) ||
           phoneNumber.includes(filterValue) ||
           id.includes(filterValue)
-      ),
-    [patients, filterValue]
-  );
+      );
+  }, [patients, filterValue, order, orderBy, query]);
 
   useEffect(() => {
     loadItems();
@@ -205,7 +183,7 @@ export const Patients = () => {
                       selected={order === false && orderBy === "lastName"}
                     >
                       <ActionList.LeadingVisual>
-                        <SortDescIcon />
+                        <SortAscIcon />
                       </ActionList.LeadingVisual>
                       За прізвищем (А-Я)
                     </ActionList.Item>
@@ -214,7 +192,7 @@ export const Patients = () => {
                       selected={order === true && orderBy === "lastName"}
                     >
                       <ActionList.LeadingVisual>
-                        <SortAscIcon />
+                        <SortDescIcon />
                       </ActionList.LeadingVisual>
                       За прізвищем (Я-А)
                     </ActionList.Item>
