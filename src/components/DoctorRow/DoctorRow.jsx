@@ -1,18 +1,14 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { Box, Button, Token, Text, Tooltip } from "@primer/react";
-import { CalendarIcon, RepoIcon } from "@primer/octicons-react";
-import { toggleQuery, hasQuery } from "../../utils";
+import { Box, Button, Text, Tooltip } from "@primer/react";
+import { RepoIcon } from "@primer/octicons-react";
 
-export const PatientRow = ({
-  additionalInfo,
-  birthDate,
+export const DoctorRow = ({
   fathersName,
   firstName,
   id,
   lastName,
   phoneNumber,
-  tags,
   timestamp,
   deleting,
   onStartDelete,
@@ -74,25 +70,11 @@ export const PatientRow = ({
                 },
               }}
               as={NavLink}
-              to={`/edit-patient/${id}`}
+              to={`/edit-doctor/${id}`}
             >
               {lastName} {firstName} {fathersName}
             </Text>
           </Tooltip>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            {tags.map((tag) => (
-              <Token
-                sx={{
-                  cursor: "pointer",
-                }}
-                isSelected={hasQuery(tag.id)}
-                as={NavLink}
-                key={tag.id}
-                text={tag.text}
-                to={`/patients?${toggleQuery(tag.id)}`}
-              />
-            ))}
-          </Box>
         </Box>
         <Box sx={{ fontSize: 12, display: "flex", gap: 2, opacity: 0.5 }}>
           {id && (
@@ -100,10 +82,6 @@ export const PatientRow = ({
               <Text>#{id}</Text>
             </Box>
           )}
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            <CalendarIcon size={12} />
-            <Text>{birthDate}</Text>
-          </Box>
           {phoneNumber && (
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <RepoIcon size={12} />
@@ -111,17 +89,6 @@ export const PatientRow = ({
             </Box>
           )}
         </Box>
-        {additionalInfo && (
-          <Box
-            sx={{
-              fontSize: 12,
-              display: "flex",
-              opacity: 0.5,
-            }}
-          >
-            {additionalInfo}
-          </Box>
-        )}
       </Box>
       <Box>
         {deleting ? (

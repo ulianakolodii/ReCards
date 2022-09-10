@@ -6,7 +6,6 @@ export const createDB = () =>
     };
     openRequest.onupgradeneeded = (event) => {
       const db = event.target.result;
-      console.log("db", db);
       if (!db.objectStoreNames.contains("doctors")) {
         db.createObjectStore("doctors", {
           keyPath: "id",

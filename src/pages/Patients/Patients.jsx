@@ -23,7 +23,7 @@ import {
   deletePatient,
   getAllUniqueTags,
 } from "../../utils/db";
-import { toggleQuery, hasQuery } from "../../utils";
+import { toggleQuery, hasQuery, compare } from "../../utils";
 import { useQuery } from "../../hooks";
 
 export const Patients = () => {
@@ -31,7 +31,7 @@ export const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [deletingID, setDeletingID] = useState();
   const [tags, setTags] = useState();
-  const [orderBy, setOrderBy] = useState("lastName");
+  const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [, startTransition] = useTransition();
@@ -71,14 +71,11 @@ export const Patients = () => {
         })
       )
       .then((items) => {
-        if (!orderBy) {
-          return items;
-        }
         return items.sort((a, b) => {
           if (order) {
-            return (b?.[orderBy] || "").localeCompare(a?.[orderBy] || "");
+            return compare(b?.[orderBy], a?.[orderBy]);
           }
-          return (a?.[orderBy] || "").localeCompare(b?.[orderBy] || "");
+          return compare(a?.[orderBy], b?.[orderBy]);
         });
       })
       .then((items) =>
@@ -103,20 +100,13 @@ export const Patients = () => {
   const filteredItems = useMemo(
     () =>
       patients.filter(
-        ({
-          lastName,
-          firstName,
-          fathersName,
-          birthDate,
-          phoneNumber,
-          cardNumber,
-        }) =>
+        ({ lastName, firstName, fathersName, birthDate, phoneNumber, id }) =>
           lastName.includes(filterValue) ||
           firstName.includes(filterValue) ||
           fathersName.includes(filterValue) ||
           birthDate.includes(filterValue) ||
           phoneNumber.includes(filterValue) ||
-          cardNumber.includes(filterValue)
+          id.includes(filterValue)
       ),
     [patients, filterValue]
   );
@@ -193,22 +183,22 @@ export const Patients = () => {
                 <ActionMenu.Overlay width="medium">
                   <ActionList selectionVariant="single">
                     <ActionList.Item
-                      onSelect={createHandleSort("cardNumber", true)}
-                      selected={order === true && orderBy === "cardNumber"}
+                      onSelect={createHandleSort("id", true)}
+                      selected={order === true && orderBy === "id"}
                     >
                       <ActionList.LeadingVisual>
                         <SortAscIcon />
                       </ActionList.LeadingVisual>
-                      За номером карти (зростання)
+                      За номером (зростання)
                     </ActionList.Item>
                     <ActionList.Item
-                      onSelect={createHandleSort("cardNumber", false)}
-                      selected={order === false && orderBy === "cardNumber"}
+                      onSelect={createHandleSort("id", false)}
+                      selected={order === false && orderBy === "id"}
                     >
                       <ActionList.LeadingVisual>
                         <SortDescIcon />
                       </ActionList.LeadingVisual>
-                      За номером карти (спадання)
+                      За номером (спадання)
                     </ActionList.Item>
                     <ActionList.Item
                       onSelect={createHandleSort("lastName", false)}
@@ -234,7 +224,7 @@ export const Patients = () => {
             </Box>
           </Box>
           {filteredItems.map((patient) => (
-            <PatientRow {...patient} />
+            <PatientRow key={patient.id} {...patient} />
           ))}
           {filteredItems.length === 0 && (
             <Box

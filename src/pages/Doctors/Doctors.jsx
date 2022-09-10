@@ -12,60 +12,14 @@ import {
   Box,
   Button,
   TextInput,
+  Text,
+  ActionList,
+  ActionMenu,
 } from "@primer/react";
-import { SearchIcon } from "@primer/octicons-react";
+import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
-import { Table } from "../../components";
+import { DoctorRow } from "../../components";
 import { getAllDoctors, deleteDoctor } from "../../utils/db";
-
-const columns = [
-  { title: "Прізвище" },
-  { title: "Ім'я" },
-  { title: "По-батькові" },
-  { title: "Номер телефону" },
-  { title: "" },
-];
-
-const mapToTable =
-  (deletingID, createDeletingHandler, createDeleteHandler) => (doctors) =>
-    doctors?.map((doctor) => [
-      doctor.lastName,
-      doctor.firstName,
-      doctor.fathersName,
-      doctor.phoneNumber,
-      deletingID === doctor.id ? (
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            as="span"
-            sx={{
-              color: "danger.fg",
-            }}
-          >
-            Ви впевнені?
-          </Box>
-          <Button variant="danger" onClick={createDeleteHandler(doctor.id)}>
-            Так
-          </Button>
-          <Button onClick={createDeletingHandler(undefined)}>Ні</Button>
-        </Box>
-      ) : (
-        <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-          <Button as={NavLink} to={`/edit-doctor/${doctor.id}`}>
-            Редагувати
-          </Button>
-          <Button variant="danger" onClick={createDeletingHandler(doctor.id)}>
-            Видалити
-          </Button>
-        </Box>
-      ),
-    ]);
 
 export const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -82,7 +36,7 @@ export const Doctors = () => {
   const filteredItems = useMemo(
     () =>
       doctors.filter(
-        ([lastName, firstName, fathersName, phoneNumber]) =>
+        ({ lastName, firstName, fathersName, phoneNumber }) =>
           lastName.includes(filterValue) ||
           firstName.includes(filterValue) ||
           fathersName.includes(filterValue) ||
@@ -92,20 +46,30 @@ export const Doctors = () => {
   );
 
   const loadDoctors = useCallback(() => {
-    const createDeletingHandler = (id) => () => {
+    const handleStartDelete = (id) => {
       setDeletingID(id);
     };
 
-    const createDeleteHandler = (id) => () => {
+    const handleConfirmDelete = (id) => {
       deleteDoctor(id).then(() => {
         loadDoctors();
       });
     };
-    return getAllDoctors()
-      .then(mapToTable(deletingID, createDeletingHandler, createDeleteHandler))
-      .then((result) => {
-        setDoctors(result);
-      });
+
+    const handleCancelDelete = () => {
+      setDeletingID(undefined);
+    };
+    return getAllDoctors().then((items) => {
+      setDoctors(
+        items.map((item) => ({
+          ...item,
+          deleting: item.id === deletingID,
+          onStartDelete: handleStartDelete,
+          onCancelDelete: handleCancelDelete,
+          onConfirmDelete: handleConfirmDelete,
+        }))
+      );
+    });
   }, [setDoctors, deletingID]);
 
   useEffect(() => {
@@ -113,12 +77,16 @@ export const Doctors = () => {
   }, [loadDoctors]);
   return (
     <PageLayout>
-      <PageLayout.Header>
-        <Pagehead sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 3,
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Box sx={{ display: "flex", gap: 3 }}>
-            <Heading as="h2" sx={{ fontSize: 24 }}>
-              Лікарі
-            </Heading>
             <TextInput
               onInput={handleFilterInput}
               value={filterValue}
@@ -127,29 +95,93 @@ export const Doctors = () => {
               sx={{ minWidth: 250 }}
             />
           </Box>
-          <Button as={NavLink} to="/add-doctor">
-            Додати лікаря
-          </Button>
-        </Pagehead>
-      </PageLayout.Header>
+        </Box>
+        <Button as={NavLink} to="/add-doctor">
+          Додати лікаря
+        </Button>
+      </Box>
       <PageLayout.Content>
+        <Box
+          sx={{
+            background: (theme) => theme.colors.btn.focusBg,
+            borderTopRightRadius: 6,
+            borderTopLeftRadius: 6,
+            borderStyle: "solid",
+            borderColor: "btn.border",
+            padding: 3,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <ActionMenu>
+              <ActionMenu.Button variant="invisible">
+                Сортувати
+              </ActionMenu.Button>
+
+              <ActionMenu.Overlay width="medium">
+                <ActionList selectionVariant="single">
+                  <ActionList.Item>
+                    <ActionList.LeadingVisual>
+                      <SortAscIcon />
+                    </ActionList.LeadingVisual>
+                    За номером карти (зростання)
+                  </ActionList.Item>
+                  <ActionList.Item>
+                    <ActionList.LeadingVisual>
+                      <SortDescIcon />
+                    </ActionList.LeadingVisual>
+                    За номером карти (спадання)
+                  </ActionList.Item>
+                  <ActionList.Item>
+                    <ActionList.LeadingVisual>
+                      <SortDescIcon />
+                    </ActionList.LeadingVisual>
+                    За прізвищем (А-Я)
+                  </ActionList.Item>
+                  <ActionList.Item>
+                    <ActionList.LeadingVisual>
+                      <SortAscIcon />
+                    </ActionList.LeadingVisual>
+                    За прізвищем (Я-А)
+                  </ActionList.Item>
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
+          </Box>
+        </Box>
+        {filteredItems.map((doctor) => (
+          <DoctorRow key={doctor.id} {...doctor} />
+        ))}
         {filteredItems.length === 0 && (
           <Box
             sx={{
+              width: "100%",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               flexDirection: "column",
+              alignItems: "center",
+              padding: 8,
+              gap: 2,
+              borderWidth: 1,
+              borderTopWidth: 0,
+              borderStyle: "solid",
+              borderColor: "btn.border",
+              boxSizing: "border-box",
             }}
           >
-            <Box as="img" src="empty.png" alt="Empty" />
-            <Heading as="h6" sx={{ fontSize: 24 }}>
-              Лікарі відсутні!
-            </Heading>
+            <Box as="img" src="empty.svg" alt="Empty" />
+            <Text sx={{ fontSize: 36 }}>Нікого не знайдено!</Text>
+            <Text>Спробуйте додати лікаря.</Text>
+            <Button
+              sx={{ marginTop: 2 }}
+              variant="primary"
+              as={NavLink}
+              to="/add-doctor"
+            >
+              Додати лікаря
+            </Button>
           </Box>
-        )}
-        {filteredItems.length !== 0 && (
-          <Table columns={columns} data={filteredItems}></Table>
         )}
       </PageLayout.Content>
     </PageLayout>
