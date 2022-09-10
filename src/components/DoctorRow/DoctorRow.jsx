@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Button, Text, Tooltip } from "@primer/react";
-import { RepoIcon } from "@primer/octicons-react";
+import { RepoIcon, OrganizationIcon } from "@primer/octicons-react";
 
 export const DoctorRow = ({
   fathersName,
@@ -9,6 +9,7 @@ export const DoctorRow = ({
   id,
   lastName,
   phoneNumber,
+  department,
   timestamp,
   deleting,
   onStartDelete,
@@ -86,6 +87,12 @@ export const DoctorRow = ({
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <RepoIcon size={12} />
               <Text>{phoneNumber}</Text>
+            </Box>
+          )}
+          {department && (
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              <OrganizationIcon size={12} />
+              <Text>{department}</Text>
             </Box>
           )}
         </Box>

@@ -47,7 +47,8 @@ export const AutocompleteWithTokens = ({
   return (
     <Autocomplete>
       <Autocomplete.Input
-        sx={{ width: "100%", boxSizing: "border-box" }}
+        block
+        sx={{ boxSizing: "border-box" }}
         as={TextInputWithTokens}
         tokens={value}
         onTokenRemove={onTokenRemove}

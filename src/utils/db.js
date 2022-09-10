@@ -1,3 +1,5 @@
+import { hash } from "./hash";
+
 export const createDB = () =>
   new Promise((resolve, reject) => {
     const openRequest = indexedDB.open("uliana", 2);
@@ -70,6 +72,19 @@ export const getAllDoctors = () =>
           resolve(event.target.result);
         };
       })
+  );
+
+export const getAllDepartments = () =>
+  getAllDoctors().then((doctors) =>
+    doctors.reduce((accumulator, { department }) => {
+      if (department) {
+        return {
+          ...accumulator,
+          [hash(department)]: department,
+        };
+      }
+      return accumulator;
+    }, {})
   );
 
 export const getDoctorByID = (id) =>

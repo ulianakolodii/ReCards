@@ -7,9 +7,16 @@ import {
   TextInput,
   Box,
   Button,
+  Autocomplete,
+  Text,
 } from "@primer/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoctor, updateDoctor, getDoctorByID } from "../../utils/db";
+import {
+  addDoctor,
+  updateDoctor,
+  getDoctorByID,
+  getAllDepartments,
+} from "../../utils/db";
 
 export const AddDoctor = () => {
   const { id } = useParams();
@@ -17,13 +24,26 @@ export const AddDoctor = () => {
     useState({ fathersName: "", firstName: "", lastName: "", phoneNumber: "" });
   const navigate = useNavigate();
 
+  const [department, setDepartment] = useState("");
+  const [departmentItems, setDepartmentItems] = useState([]);
+
+  const handleInput = (event) => {
+    setDepartment(event.target.value);
+  };
+
+  const handleSelectedChange = (event) => {
+    setDepartment(event[0].text);
+  };
+
   const handleSubmit = (event) => {
     if (id) {
+      console.log();
       updateDoctor({
         fathersName,
         firstName,
         lastName,
         phoneNumber,
+        department,
         id: parseInt(id, 10),
       }).then(() => navigate("/doctors"));
     } else {
@@ -32,6 +52,7 @@ export const AddDoctor = () => {
         firstName,
         lastName,
         phoneNumber,
+        department,
         timestamp: Date.now(),
       }).then(() => navigate("/doctors"));
     }
@@ -50,6 +71,17 @@ export const AddDoctor = () => {
       getDoctorByID(parseInt(id, 10)).then(setDoctor);
     }
   }, [setDoctor, id]);
+
+  useEffect(() => {
+    getAllDepartments().then((items) => {
+      setDepartmentItems(
+        Object.keys(items).map((id) => ({
+          text: items[id],
+          id,
+        }))
+      );
+    });
+  }, [setDepartmentItems]);
 
   return (
     <PageLayout>
@@ -90,6 +122,28 @@ export const AddDoctor = () => {
               onInput={createInputHandler("fathersName")}
               block
             />
+          </FormControl>
+          <FormControl required>
+            <FormControl.Label>Кафедра</FormControl.Label>
+            <Autocomplete>
+              <Autocomplete.Input
+                block
+                value={department}
+                onInput={handleInput}
+              />
+              <Autocomplete.Overlay>
+                <Autocomplete.Menu
+                  onSelectedChange={handleSelectedChange}
+                  emptyStateText={
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <Text sx={{ fontWeight: 600 }}>Нічого не знайдено!</Text>
+                    </Box>
+                  }
+                  items={departmentItems}
+                  selectedItemIds={[]}
+                />
+              </Autocomplete.Overlay>
+            </Autocomplete>
           </FormControl>
           <FormControl>
             <FormControl.Label>Номер телефону</FormControl.Label>
