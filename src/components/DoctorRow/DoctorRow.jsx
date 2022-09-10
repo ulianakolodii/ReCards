@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Button, Text, Tooltip } from "@primer/react";
-import { RepoIcon, OrganizationIcon } from "@primer/octicons-react";
+import { OrganizationIcon } from "@primer/octicons-react";
+import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
 
 export const DoctorRow = ({
   fathersName,
@@ -84,8 +85,18 @@ export const DoctorRow = ({
             </Box>
           )}
           {phoneNumber && (
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              <RepoIcon size={12} />
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                "& > svg": {
+                  width: 12,
+                  height: 12,
+                },
+              }}
+            >
+              <MobileIcon />
               <Text>{phoneNumber}</Text>
             </Box>
           )}

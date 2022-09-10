@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Button, Token, Text, Tooltip } from "@primer/react";
-import { CalendarIcon, RepoIcon } from "@primer/octicons-react";
+import { CalendarIcon } from "@primer/octicons-react";
 import { toggleQuery, hasQuery } from "../../utils";
+import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
 
 export const PatientRow = ({
   additionalInfo,
@@ -105,8 +106,18 @@ export const PatientRow = ({
             <Text>{birthDate}</Text>
           </Box>
           {phoneNumber && (
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              <RepoIcon size={12} />
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                "& > svg": {
+                  width: 12,
+                  height: 12,
+                },
+              }}
+            >
+              <MobileIcon />
               <Text>{phoneNumber}</Text>
             </Box>
           )}
