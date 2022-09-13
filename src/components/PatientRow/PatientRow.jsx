@@ -64,7 +64,11 @@ export const PatientRow = ({
         }}
       >
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Tooltip aria-label={new Date(timestamp).toLocaleString()}>
+          <Tooltip
+            aria-label={`Час створення запису: ${new Date(
+              timestamp
+            ).toLocaleString()}`}
+          >
             <Text
               sx={{
                 fontWeight: "bold",

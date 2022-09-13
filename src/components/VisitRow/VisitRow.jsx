@@ -64,7 +64,11 @@ export const VisitRow = ({
         }}
       >
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Tooltip aria-label={new Date(timestamp).toLocaleString()}>
+          <Tooltip
+            aria-label={`Час створення запису: ${new Date(
+              timestamp
+            ).toLocaleString()}`}
+          >
             <Text
               sx={{
                 fontWeight: "bold",
@@ -94,10 +98,7 @@ export const VisitRow = ({
             }}
           >
             <CalendarIcon />
-            <Text>
-              {new Date(dateTime).toLocaleDateString()}{" "}
-              {new Date(dateTime).toLocaleTimeString()}
-            </Text>
+            <Text>{new Date(dateTime).toLocaleString()}</Text>
           </Box>
         </Box>
         <Box sx={{ fontSize: 12, display: "flex", gap: 2, opacity: 0.5 }}>
