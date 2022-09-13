@@ -43,14 +43,14 @@ export const AddVisit = () => {
         patient,
         dateTime: Date.parse(dateTime),
         id: parseInt(id, 10),
-      }).then(() => navigate("/visits"));
+      }).then(() => navigate("/"));
     } else {
       addVisit({
         doctor,
         patient,
         dateTime: Date.parse(dateTime),
         timestamp: Date.now(),
-      }).then(() => navigate("/visits"));
+      }).then(() => navigate("/"));
     }
     event.preventDefault();
   };

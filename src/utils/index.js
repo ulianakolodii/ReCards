@@ -6,3 +6,4 @@ export * from "./dbArrayToObject";
 export * from "./compare";
 export * from "./sortBy";
 export * from "./containsTags";
+export * from "./includesBy";
