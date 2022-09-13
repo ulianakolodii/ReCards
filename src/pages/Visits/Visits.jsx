@@ -13,8 +13,15 @@ import {
   Text,
   ActionList,
   ActionMenu,
+  FormControl,
+  SelectPanel,
 } from "@primer/react";
-import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
+import {
+  SearchIcon,
+  SortAscIcon,
+  SortDescIcon,
+  TriangleDownIcon,
+} from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { VisitRow } from "../../components";
 import {
@@ -34,6 +41,18 @@ export const Visits = () => {
   const [, startTransition] = useTransition();
   const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState(false);
+
+  const [patientSelected, setPatientSelected] = useState([]);
+  const [openPatientsFilter, setOpenPatientsFilter] = useState(false);
+  const [patientsFilterText, setPatientsFilterText] = useState("");
+
+  const [doctorsSelected, setDoctorsSelected] = useState([]);
+  const [openDoctorsFilter, setOpenDoctorsFilter] = useState(false);
+  const [doctorsFilterText, setDoctorsFilterText] = useState("");
+
+  const [departmentsSelected, setDepartmentsSelected] = useState([]);
+  const [openDepartmentsFilter, setOpenDepartmentsFilter] = useState(false);
+  const [departmentsFilterText, setDepartmentsFilterText] = useState("");
 
   const createHandleSort = (orderByColumn, orderType) => () => {
     setOrderBy(orderByColumn);
@@ -123,6 +142,44 @@ export const Visits = () => {
     ]
   );
 
+  const patientItems = useMemo(
+    () =>
+      Object.keys(patients)
+        .map((key) => ({
+          ...patients[key],
+          text: `${patients[key].lastName} ${patients[key].firstName} ${patients[key].fathersName}`,
+        }))
+        .filter((patient) => patient.text.includes(patientsFilterText)),
+    [patients, patientsFilterText]
+  );
+
+  const doctorsItems = useMemo(
+    () =>
+      Object.keys(doctors)
+        .map((key) => ({
+          ...doctors[key],
+          text: `${doctors[key].lastName} ${doctors[key].firstName} ${doctors[key].fathersName}`,
+        }))
+        .filter((el) => el.text.includes(doctorsFilterText)),
+    [doctors, doctorsFilterText]
+  );
+
+  const departmentItems = useMemo(
+    () =>
+      Object.values(
+        Object.entries(doctors).reduce((acc, [id, el]) => {
+          if (!el.department.includes(departmentsFilterText)) {
+            return acc;
+          }
+          return {
+            ...acc,
+            [el.department]: { id: el.department, text: el.department },
+          };
+        }, {})
+      ),
+    [doctors, departmentsFilterText]
+  );
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -161,11 +218,82 @@ export const Visits = () => {
             borderColor: "btn.border",
             padding: 3,
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <Box>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <FormControl>
+              <FormControl.Label>Від</FormControl.Label>
+              <TextInput type="datetime-local" block autoFocus />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>До</FormControl.Label>
+              <TextInput type="datetime-local" block autoFocus />
+            </FormControl>
+          </Box>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <SelectPanel
+              renderAnchor={({ ...anchorProps }) => (
+                <Button
+                  variant="invisible"
+                  trailingIcon={TriangleDownIcon}
+                  {...anchorProps}
+                >
+                  Кафедра
+                </Button>
+              )}
+              title="Сортувати за кафедрою"
+              open={openDepartmentsFilter}
+              onOpenChange={setOpenDepartmentsFilter}
+              items={departmentItems}
+              selected={departmentsSelected}
+              onSelectedChange={setDepartmentsSelected}
+              onFilterChange={setDepartmentsFilterText}
+              showItemDividers={true}
+              overlayProps={{ width: "medium", height: "medium" }}
+            />
+            <SelectPanel
+              renderAnchor={({ ...anchorProps }) => (
+                <Button
+                  variant="invisible"
+                  trailingIcon={TriangleDownIcon}
+                  {...anchorProps}
+                >
+                  Лікар
+                </Button>
+              )}
+              title="Сортувати за лікарем"
+              open={openDoctorsFilter}
+              onOpenChange={setOpenDoctorsFilter}
+              items={doctorsItems}
+              selected={doctorsSelected}
+              onSelectedChange={setDoctorsSelected}
+              onFilterChange={setDoctorsFilterText}
+              showItemDividers={true}
+              overlayProps={{ width: "medium", height: "medium" }}
+            />
+            <SelectPanel
+              variant="inset"
+              renderAnchor={({ ...anchorProps }) => (
+                <Button
+                  variant="invisible"
+                  trailingIcon={TriangleDownIcon}
+                  {...anchorProps}
+                >
+                  Пацієнт
+                </Button>
+              )}
+              title="Сортувати за пацієнтом"
+              open={openPatientsFilter}
+              onOpenChange={setOpenPatientsFilter}
+              items={patientItems}
+              selected={patientSelected}
+              onSelectedChange={setPatientSelected}
+              onFilterChange={setPatientsFilterText}
+              showItemDividers={true}
+              overlayProps={{ width: "medium", height: "medium" }}
+            />
             <ActionMenu>
               <ActionMenu.Button variant="invisible">
                 Сортувати
