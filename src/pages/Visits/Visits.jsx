@@ -15,6 +15,7 @@ import {
   ActionMenu,
   FormControl,
   SelectPanel,
+  Token,
 } from "@primer/react";
 import {
   SearchIcon,
@@ -32,6 +33,9 @@ import {
   getAllVisits,
   includesBy,
   sortBy,
+  getAllUniqueTags,
+  hasQuery,
+  toggleQuery,
 } from "../../utils";
 
 const getFullName = (el) =>
@@ -44,6 +48,7 @@ export const Visits = () => {
   const [, startTransition] = useTransition();
   const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState(false);
+  const [tags, setTags] = useState();
 
   const [patientsSelected, setPatientSelected] = useState([]);
   const [openPatientsFilter, setOpenPatientsFilter] = useState(false);
@@ -235,6 +240,11 @@ export const Visits = () => {
   useEffect(() => {
     loadItems();
   }, [loadItems]);
+
+  useEffect(() => {
+    getAllUniqueTags().then(setTags);
+  }, [setTags]);
+
   return (
     <PageLayout>
       <Box
@@ -245,7 +255,7 @@ export const Visits = () => {
           marginBottom: 3,
         }}
       >
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
           <Box sx={{ display: "flex", gap: 3 }}>
             <TextInput
               onInput={handleFilterInput}
@@ -255,10 +265,29 @@ export const Visits = () => {
               sx={{ minWidth: 250 }}
             />
           </Box>
+          <FormControl>
+            <FormControl.Label>Від</FormControl.Label>
+            <TextInput
+              type="datetime-local"
+              value={fromDateTime}
+              onInput={handleInputFromDateTime}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControl.Label>До</FormControl.Label>
+            <TextInput
+              type="datetime-local"
+              value={toDateTime}
+              onInput={handleInputToDateTime}
+            />
+          </FormControl>
         </Box>
-        <Button as={NavLink} to="/add-visit">
-          Додати візит
-        </Button>
+
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
+          <Button as={NavLink} to="/add-visit">
+            Додати візит
+          </Button>
+        </Box>
       </Box>
       <PageLayout.Content>
         <Box
@@ -275,22 +304,20 @@ export const Visits = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: 2 }}>
-            <FormControl>
-              <FormControl.Label>Від</FormControl.Label>
-              <TextInput
-                type="datetime-local"
-                value={fromDateTime}
-                onInput={handleInputFromDateTime}
-              />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>До</FormControl.Label>
-              <TextInput
-                type="datetime-local"
-                value={toDateTime}
-                onInput={handleInputToDateTime}
-              />
-            </FormControl>
+            <Text sx={{ fontSize: 14 }}>Мітки:</Text>
+            {tags &&
+              tags.map((tag) => (
+                <Token
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  isSelected={hasQuery(tag.id)}
+                  as={NavLink}
+                  key={tag.id}
+                  text={tag.text}
+                  to={`/?${toggleQuery(tag.id)}`}
+                />
+              ))}
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <SelectPanel

@@ -1,9 +1,10 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { Box, Button, Text, Tooltip } from "@primer/react";
+import { Box, Button, Text, Tooltip, Token } from "@primer/react";
 import { OrganizationIcon, CalendarIcon } from "@primer/octicons-react";
 import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
 import { ReactComponent as DoctorIcon } from "../../assets/icons/user-doctor-solid.svg";
+import { hasQuery, toggleQuery } from "../../utils";
 
 export const VisitRow = ({
   doctor,
@@ -84,6 +85,20 @@ export const VisitRow = ({
               {patient.lastName} {patient.firstName} {patient.fathersName}
             </Text>
           </Tooltip>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            {patient.tags.map((tag) => (
+              <Token
+                sx={{
+                  cursor: "pointer",
+                }}
+                isSelected={hasQuery(tag.id)}
+                as={NavLink}
+                key={tag.id}
+                text={tag.text}
+                to={`/?${toggleQuery(tag.id)}`}
+              />
+            ))}
+          </Box>
         </Box>
         <Box sx={{ fontSize: 12, display: "flex", gap: 2, opacity: 0.5 }}>
           <Box
