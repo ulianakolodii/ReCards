@@ -243,7 +243,6 @@ export const Visits = () => {
             </Button>
           </Box>
         )}
-        {console.log(filteredItems)}
       </PageLayout.Content>
     </PageLayout>
   );

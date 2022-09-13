@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import { Autocomplete, TextInput } from "@primer/react";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
@@ -7,27 +7,29 @@ const emptyArray = [];
 export const AutocompleteSingle = ({
   items,
   value = "",
+  validationStatus = "",
   onChange = () => {},
 }) => {
-  const [inputValue, setInputValue] = useState(value);
-
-  const itemsSet = useMemo(
-    () => new Set(items.map(({ text }) => text)),
-    [items]
+  const handleChange = useCallback(
+    (newlySelectedItems) => {
+      if (!Array.isArray(newlySelectedItems)) {
+        return;
+      }
+      onChange(newlySelectedItems[0].text);
+    },
+    [onChange]
   );
 
-  const validationStatus = useMemo(
-    () => (itemsSet.has(inputValue) || inputValue === "" ? "" : "error"),
-    [itemsSet, inputValue]
+  const handleInput = useCallback(
+    (event) => {
+      onChange(event.target.value);
+    },
+    [onChange]
   );
 
-  const handleChange = (newlySelectedItems) => {
-    if (!Array.isArray(newlySelectedItems)) {
-      return;
-    }
-    setInputValue(newlySelectedItems[0].text);
-    onChange(newlySelectedItems[0]);
-  };
+  const handleClearClick = useCallback(() => {
+    onChange("");
+  }, [onChange]);
 
   return (
     <>
@@ -35,16 +37,12 @@ export const AutocompleteSingle = ({
         required
         block
         validationStatus={validationStatus}
-        value={inputValue}
-        onInput={(e) => {
-          setInputValue(e.target.value);
-        }}
+        value={value}
+        onInput={handleInput}
         trailingAction={
-          inputValue && (
+          value && (
             <TextInput.Action
-              onClick={() => {
-                setInputValue("");
-              }}
+              onClick={handleClearClick}
               icon={XCircleFillIcon}
               aria-label="Очистити"
               sx={{ color: "fg.subtle" }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Autocomplete,
   PageLayout,
@@ -18,6 +18,7 @@ import {
   getAllDoctors,
   getAllPatients,
 } from "../../utils/db";
+import dayjs from "dayjs";
 
 const mapToAutocomplete = (doctors) =>
   doctors?.map((doctor) => ({
@@ -27,27 +28,34 @@ const mapToAutocomplete = (doctors) =>
 
 export const AddVisit = () => {
   const { id } = useParams();
+
+  const [doctor, setDoctor] = useState("");
+  const [patient, setPatient] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
-  const [{ dateTime, doctor, patient }, setVisit] = useState({
-    dateTime: "",
-    doctor: undefined,
-    patient: undefined,
-  });
+  const doctorObj = useMemo(
+    () => doctors.find((el) => String(el?.text).includes(doctor)),
+    [doctors, doctor]
+  );
+  const patientObj = useMemo(
+    () => patients.find((el) => String(el?.text).includes(patient)),
+    [patients, patient]
+  );
+  const [dateTime, setDateTime] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     if (id) {
       updateVisit({
-        doctor,
-        patient,
+        doctor: doctorObj.id,
+        patient: patientObj.id,
         dateTime: Date.parse(dateTime),
         id: parseInt(id, 10),
       }).then(() => navigate("/"));
     } else {
       addVisit({
-        doctor,
-        patient,
+        doctor: doctorObj.id,
+        patient: patientObj.id,
         dateTime: Date.parse(dateTime),
         timestamp: Date.now(),
       }).then(() => navigate("/"));
@@ -55,37 +63,32 @@ export const AddVisit = () => {
     event.preventDefault();
   };
 
-  const createInputHandler = (name) => (event) => {
-    setVisit((prevDoctor) => ({
-      ...prevDoctor,
-      [name]: event.target.value,
-    }));
-  };
-
-  const handleDoctorChange = ({ id }) => {
-    setVisit((prevVisit) => ({ ...prevVisit, doctor: id }));
-  };
-
-  const handlePatientChange = ({ id }) => {
-    setVisit((prevVisit) => ({ ...prevVisit, patient: id }));
-  };
+  const handleDateTimeInput = useCallback(
+    (event) => {
+      setDateTime(event.target.value);
+    },
+    [setDateTime]
+  );
 
   useEffect(() => {
-    if (id) {
-      getVisitByID(parseInt(id, 10)).then(setVisit);
-    }
-  }, [setVisit, id]);
+    Promise.all([
+      getAllDoctors().then(mapToAutocomplete),
+      getAllPatients().then(mapToAutocomplete),
+    ]).then(([doctors, patients]) => {
+      setDoctors(doctors);
+      setPatients(patients);
 
-  useEffect(() => {
-    getAllDoctors()
-      .then(mapToAutocomplete)
-      .then((result) => {
-        setDoctors(result);
-      });
-    getAllPatients()
-      .then(mapToAutocomplete)
-      .then((result) => setPatients(result));
-  }, [setDoctors, setPatients]);
+      if (id) {
+        getVisitByID(parseInt(id, 10)).then(
+          ({ doctor: doctorID, patient: patientID, dateTime: dt }) => {
+            setDoctor(doctors.find((el) => el.id === doctorID)?.text || "");
+            setPatient(patients.find((el) => el.id === patientID)?.text || "");
+            setDateTime(dt);
+          }
+        );
+      }
+    });
+  }, [setDoctors, setPatients, setDateTime, setDoctor, setPatient, id]);
 
   return (
     <PageLayout>
@@ -106,9 +109,10 @@ export const AddVisit = () => {
             <FormControl.Label>Лікар</FormControl.Label>
             <Autocomplete>
               <AutocompleteSingle
+                validationStatus={doctorObj ? "" : "error"}
                 items={doctors}
                 value={doctor}
-                onChange={handleDoctorChange}
+                onChange={setDoctor}
               />
             </Autocomplete>
           </FormControl>
@@ -116,9 +120,10 @@ export const AddVisit = () => {
             <FormControl.Label>Пацієнт</FormControl.Label>
             <Autocomplete>
               <AutocompleteSingle
+                validationStatus={patientObj ? "" : "error"}
                 items={patients}
                 value={patient}
-                onChange={handlePatientChange}
+                onChange={setPatient}
               />
             </Autocomplete>
           </FormControl>
@@ -126,19 +131,27 @@ export const AddVisit = () => {
             <FormControl.Label>Дата та час</FormControl.Label>
             <TextInput
               type="datetime-local"
-              value={dateTime}
-              onInput={createInputHandler("dateTime")}
+              value={dayjs(dateTime).format("YYYY-MM-DDTHH:mm")}
+              onInput={handleDateTimeInput}
               block
               autoFocus
             />
           </FormControl>
           <Box>
             {!id && (
-              <Button type="submit" variant="primary">
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={!doctorObj || !patientObj}
+              >
                 Додати
               </Button>
             )}
-            {id && <Button type="submit">Зберегти</Button>}
+            {id && (
+              <Button type="submit" disabled={!doctorObj || !patientObj}>
+                Зберегти
+              </Button>
+            )}
           </Box>
         </Box>
       </PageLayout.Content>
