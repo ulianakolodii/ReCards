@@ -24,11 +24,8 @@ import {
   getAllPatients,
   getAllVisits,
   includesBy,
+  sortBy,
 } from "../../utils";
-
-const getFullName = (mapObj, id) => {
-  return `${mapObj?.[id]?.lastName} ${mapObj?.[id]?.firstName} ${mapObj?.[id]?.fathersName}`;
-};
 
 export const Visits = () => {
   const [[doctors, patients, visits], setItems] = useState([{}, {}, []]);
@@ -84,6 +81,7 @@ export const Visits = () => {
       visits
         .map((visit) => ({
           ...visit,
+          lastName: patients[visit.patient]?.lastName,
           doctor: doctors[visit.doctor],
           patient: patients[visit.patient],
           deleting: visit.id === deletingID,
@@ -109,7 +107,8 @@ export const Visits = () => {
               "phoneNumber",
               "id",
             ])
-        ),
+        )
+        .sort(sortBy(order, orderBy)),
     [
       deletingID,
       visits,
@@ -119,6 +118,8 @@ export const Visits = () => {
       handleStartDelete,
       handleCancelDelete,
       handleConfirmDelete,
+      order,
+      orderBy,
     ]
   );
 

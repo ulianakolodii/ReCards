@@ -83,7 +83,6 @@ export const Patients = () => {
   const filteredItems = useMemo(() => {
     return patients
       .filter(containsTags(query.getAll("tag")))
-      .sort(sortBy(order, orderBy))
       .filter((el) =>
         includesBy(filterValue, el, [
           "lastName",
@@ -93,7 +92,8 @@ export const Patients = () => {
           "phoneNumber",
           "id",
         ])
-      );
+      )
+      .sort(sortBy(order, orderBy));
   }, [patients, filterValue, order, orderBy, query]);
 
   useEffect(() => {
