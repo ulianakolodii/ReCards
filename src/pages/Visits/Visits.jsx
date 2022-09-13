@@ -34,6 +34,9 @@ import {
   sortBy,
 } from "../../utils";
 
+const getFullName = (el) =>
+  `${el?.lastName} ${el?.firstName} ${el?.fathersName}`;
+
 export const Visits = () => {
   const [[doctors, patients, visits], setItems] = useState([{}, {}, []]);
   const [deletingID, setDeletingID] = useState();
@@ -42,7 +45,7 @@ export const Visits = () => {
   const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState(false);
 
-  const [patientSelected, setPatientSelected] = useState([]);
+  const [patientsSelected, setPatientSelected] = useState([]);
   const [openPatientsFilter, setOpenPatientsFilter] = useState(false);
   const [patientsFilterText, setPatientsFilterText] = useState("");
 
@@ -53,6 +56,9 @@ export const Visits = () => {
   const [departmentsSelected, setDepartmentsSelected] = useState([]);
   const [openDepartmentsFilter, setOpenDepartmentsFilter] = useState(false);
   const [departmentsFilterText, setDepartmentsFilterText] = useState("");
+
+  const [fromDateTime, setFromDateTime] = useState("");
+  const [toDateTime, setToDateTime] = useState("");
 
   const createHandleSort = (orderByColumn, orderType) => () => {
     setOrderBy(orderByColumn);
@@ -95,6 +101,20 @@ export const Visits = () => {
     setDeletingID(undefined);
   }, [setDeletingID]);
 
+  const handleInputFromDateTime = useCallback(
+    (event) => {
+      setFromDateTime(event.target.value);
+    },
+    [setFromDateTime]
+  );
+
+  const handleInputToDateTime = useCallback(
+    (event) => {
+      setToDateTime(event.target.value);
+    },
+    [setToDateTime]
+  );
+
   const filteredItems = useMemo(
     () =>
       visits
@@ -127,6 +147,33 @@ export const Visits = () => {
               "id",
             ])
         )
+        .filter(
+          ({ doctor }) =>
+            departmentsSelected.length === 0 ||
+            departmentsSelected.find((el) => el.text === doctor.department)
+        )
+        .filter(
+          ({ doctor }) =>
+            doctorsSelected.length === 0 ||
+            doctorsSelected.find((el) => el.text === getFullName(doctor))
+        )
+        .filter(
+          ({ patient }) =>
+            patientsSelected.length === 0 ||
+            patientsSelected.find((el) => el.text === getFullName(patient))
+        )
+        .filter(({ dateTime }) => {
+          if (
+            isNaN(Date.parse(fromDateTime)) ||
+            isNaN(Date.parse(toDateTime))
+          ) {
+            return true;
+          }
+          return (
+            dateTime >= Date.parse(fromDateTime) &&
+            dateTime <= Date.parse(toDateTime)
+          );
+        })
         .sort(sortBy(order, orderBy)),
     [
       deletingID,
@@ -139,6 +186,11 @@ export const Visits = () => {
       handleConfirmDelete,
       order,
       orderBy,
+      departmentsSelected,
+      doctorsSelected,
+      patientsSelected,
+      fromDateTime,
+      toDateTime,
     ]
   );
 
@@ -147,7 +199,7 @@ export const Visits = () => {
       Object.keys(patients)
         .map((key) => ({
           ...patients[key],
-          text: `${patients[key].lastName} ${patients[key].firstName} ${patients[key].fathersName}`,
+          text: getFullName(patients[key]),
         }))
         .filter((patient) => patient.text.includes(patientsFilterText)),
     [patients, patientsFilterText]
@@ -158,7 +210,7 @@ export const Visits = () => {
       Object.keys(doctors)
         .map((key) => ({
           ...doctors[key],
-          text: `${doctors[key].lastName} ${doctors[key].firstName} ${doctors[key].fathersName}`,
+          text: getFullName(doctors[key]),
         }))
         .filter((el) => el.text.includes(doctorsFilterText)),
     [doctors, doctorsFilterText]
@@ -225,11 +277,19 @@ export const Visits = () => {
           <Box sx={{ display: "flex", gap: 2 }}>
             <FormControl>
               <FormControl.Label>Від</FormControl.Label>
-              <TextInput type="datetime-local" block autoFocus />
+              <TextInput
+                type="datetime-local"
+                value={fromDateTime}
+                onInput={handleInputFromDateTime}
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>До</FormControl.Label>
-              <TextInput type="datetime-local" block autoFocus />
+              <TextInput
+                type="datetime-local"
+                value={toDateTime}
+                onInput={handleInputToDateTime}
+              />
             </FormControl>
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
@@ -288,7 +348,7 @@ export const Visits = () => {
               open={openPatientsFilter}
               onOpenChange={setOpenPatientsFilter}
               items={patientItems}
-              selected={patientSelected}
+              selected={patientsSelected}
               onSelectedChange={setPatientSelected}
               onFilterChange={setPatientsFilterText}
               showItemDividers={true}
