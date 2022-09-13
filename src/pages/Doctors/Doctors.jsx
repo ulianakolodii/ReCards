@@ -17,7 +17,7 @@ import {
 import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { DoctorRow } from "../../components";
-import { getAllDoctors, deleteDoctor, sortBy } from "../../utils";
+import { getAllDoctors, deleteDoctor, sortBy, includesBy } from "../../utils";
 
 export const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -42,12 +42,15 @@ export const Doctors = () => {
     () =>
       doctors
         .sort(sortBy(order, orderBy))
-        .filter(
-          ({ lastName, firstName, fathersName, phoneNumber }) =>
-            lastName.includes(filterValue) ||
-            firstName.includes(filterValue) ||
-            fathersName.includes(filterValue) ||
-            phoneNumber.includes(filterValue)
+        .filter((el) =>
+          includesBy(filterValue, el, [
+            "lastName",
+            "firstName",
+            "fathersName",
+            "phoneNumber",
+            "deparment",
+            "id",
+          ])
         ),
     [doctors, filterValue, orderBy, order]
   );

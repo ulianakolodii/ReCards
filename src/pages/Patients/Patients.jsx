@@ -23,7 +23,13 @@ import {
   deletePatient,
   getAllUniqueTags,
 } from "../../utils/db";
-import { toggleQuery, hasQuery, sortBy, containsTags } from "../../utils";
+import {
+  toggleQuery,
+  hasQuery,
+  sortBy,
+  containsTags,
+  includesBy,
+} from "../../utils";
 import { useQuery } from "../../hooks";
 
 export const Patients = () => {
@@ -78,14 +84,15 @@ export const Patients = () => {
     return patients
       .filter(containsTags(query.getAll("tag")))
       .sort(sortBy(order, orderBy))
-      .filter(
-        ({ lastName, firstName, fathersName, birthDate, phoneNumber, id }) =>
-          lastName.includes(filterValue) ||
-          firstName.includes(filterValue) ||
-          fathersName.includes(filterValue) ||
-          birthDate.includes(filterValue) ||
-          phoneNumber.includes(filterValue) ||
-          id.includes(filterValue)
+      .filter((el) =>
+        includesBy(filterValue, el, [
+          "lastName",
+          "firstName",
+          "fathersName",
+          "birthDate",
+          "phoneNumber",
+          "id",
+        ])
       );
   }, [patients, filterValue, order, orderBy, query]);
 

@@ -92,12 +92,14 @@ export const Visits = () => {
           onConfirmDelete: handleConfirmDelete,
         }))
         .filter(
-          ({ doctor, patient }) =>
+          ({ doctor, patient, id }) =>
+            includesBy(filterValue, { id }, ["id"]) ||
             includesBy(filterValue, doctor, [
               "lastName",
               "firstName",
               "fathersName",
               "phoneNumber",
+              "department",
             ]) ||
             includesBy(filterValue, patient, [
               "lastName",
