@@ -44,16 +44,6 @@ export const Visits = () => {
   };
 
   const loadItems = useCallback(() => {
-    const createDeletingHandler = (id) => () => {
-      setDeletingID(id);
-    };
-
-    const createDeleteHandler = (id) => () => {
-      deleteVisit(id).then(() => {
-        loadItems();
-      });
-    };
-
     return Promise.all([
       getAllDoctors().then(dbArrayToObject),
       getAllPatients().then(dbArrayToObject),
@@ -61,13 +51,33 @@ export const Visits = () => {
     ]).then((result) => {
       setItems(result);
     });
-  }, [setItems, deletingID]);
+  }, [setItems]);
 
   const handleFilterInput = (event) => {
     startTransition(() => {
       setFilterValue(event.target.value);
     });
   };
+
+  const handleStartDelete = useCallback(
+    (id) => {
+      setDeletingID(id);
+    },
+    [setDeletingID]
+  );
+
+  const handleConfirmDelete = useCallback(
+    (id) => {
+      deleteVisit(id).then(() => {
+        loadItems();
+      });
+    },
+    [loadItems]
+  );
+
+  const handleCancelDelete = useCallback(() => {
+    setDeletingID(undefined);
+  }, [setDeletingID]);
 
   const filteredItems = useMemo(
     () =>
@@ -76,6 +86,10 @@ export const Visits = () => {
           ...visit,
           doctor: doctors[visit.doctor],
           patient: patients[visit.patient],
+          deleting: visit.id === deletingID,
+          onStartDelete: handleStartDelete,
+          onCancelDelete: handleCancelDelete,
+          onConfirmDelete: handleConfirmDelete,
         }))
         .filter(
           ({ doctor, patient }) =>
@@ -94,7 +108,16 @@ export const Visits = () => {
               "id",
             ])
         ),
-    [visits, doctors, patients, filterValue]
+    [
+      deletingID,
+      visits,
+      doctors,
+      patients,
+      filterValue,
+      handleStartDelete,
+      handleCancelDelete,
+      handleConfirmDelete,
+    ]
   );
 
   useEffect(() => {
