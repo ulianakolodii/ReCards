@@ -31,17 +31,24 @@ import {
   dbArrayToObject,
   getAllPatients,
   getAllVisits,
-  includesBy,
   sortBy,
   getAllUniqueTags,
   hasQuery,
   toggleQuery,
+  containsTags,
 } from "../../utils";
-
-const getFullName = (el) =>
-  `${el?.lastName} ${el?.firstName} ${el?.fathersName}`;
+import {
+  filterByDateTime,
+  filterByDepartments,
+  filterByDoctors,
+  filterByFilterValue,
+  filterByPatients,
+  getFullName,
+} from "./utils";
+import { useQuery } from "../../hooks";
 
 export const Visits = () => {
+  const query = useQuery();
   const [[doctors, patients, visits], setItems] = useState([{}, {}, []]);
   const [deletingID, setDeletingID] = useState();
   const [filterValue, setFilterValue] = useState("");
@@ -133,52 +140,16 @@ export const Visits = () => {
           onCancelDelete: handleCancelDelete,
           onConfirmDelete: handleConfirmDelete,
         }))
-        .filter(
-          ({ doctor, patient, id }) =>
-            includesBy(filterValue, { id }, ["id"]) ||
-            includesBy(filterValue, doctor, [
-              "lastName",
-              "firstName",
-              "fathersName",
-              "phoneNumber",
-              "department",
-            ]) ||
-            includesBy(filterValue, patient, [
-              "lastName",
-              "firstName",
-              "fathersName",
-              "birthDate",
-              "phoneNumber",
-              "id",
-            ])
+        .filter((el) =>
+          [
+            filterByFilterValue(filterValue)(el),
+            filterByDepartments(departmentsSelected)(el),
+            filterByDoctors(doctorsSelected)(el),
+            filterByPatients(patientsSelected)(el),
+            filterByDateTime(fromDateTime, toDateTime)(el),
+            containsTags(query.getAll("tag"))(el?.patient || {}),
+          ].every((el) => el === true)
         )
-        .filter(
-          ({ doctor }) =>
-            departmentsSelected.length === 0 ||
-            departmentsSelected.find((el) => el.text === doctor.department)
-        )
-        .filter(
-          ({ doctor }) =>
-            doctorsSelected.length === 0 ||
-            doctorsSelected.find((el) => el.text === getFullName(doctor))
-        )
-        .filter(
-          ({ patient }) =>
-            patientsSelected.length === 0 ||
-            patientsSelected.find((el) => el.text === getFullName(patient))
-        )
-        .filter(({ dateTime }) => {
-          if (
-            isNaN(Date.parse(fromDateTime)) ||
-            isNaN(Date.parse(toDateTime))
-          ) {
-            return true;
-          }
-          return (
-            dateTime >= Date.parse(fromDateTime) &&
-            dateTime <= Date.parse(toDateTime)
-          );
-        })
         .sort(sortBy(order, orderBy)),
     [
       deletingID,
@@ -196,6 +167,7 @@ export const Visits = () => {
       patientsSelected,
       fromDateTime,
       toDateTime,
+      query,
     ]
   );
 

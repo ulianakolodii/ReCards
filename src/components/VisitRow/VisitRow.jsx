@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Button, Text, Tooltip, Token } from "@primer/react";
 import { OrganizationIcon, CalendarIcon } from "@primer/octicons-react";
@@ -16,6 +16,7 @@ export const VisitRow = ({
   onStartDelete,
   onConfirmDelete,
   onCancelDelete,
+  on,
 }) => {
   const handleStartDelete = useCallback(() => {
     onStartDelete(id);
