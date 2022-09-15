@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Button, Text, Tooltip, Token } from "@primer/react";
 import { OrganizationIcon, CalendarIcon } from "@primer/octicons-react";
