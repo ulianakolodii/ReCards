@@ -15,7 +15,6 @@ import {
   ActionMenu,
   FormControl,
   SelectPanel,
-  Token,
   Label,
   CounterLabel,
 } from "@primer/react";
@@ -218,6 +217,18 @@ export const Visits = () => {
     [filteredItems]
   );
 
+  const patientsStatisticsList = useMemo(
+    () =>
+      filteredItems.reduce(
+        (list, { patient }) => ({
+          ...list,
+          [patient.id]: (list[patient.id] || 0) + 1,
+        }),
+        {}
+      ),
+    [filteredItems]
+  );
+
   console.log(
     "filteredItems",
     filteredItems,
@@ -233,9 +244,14 @@ export const Visits = () => {
         .map((key) => ({
           ...patients[key],
           text: getFullName(patients[key]),
+          leadingVisual: () => (
+            <CounterLabel>
+              {patientsStatisticsList[patients[key].id]}
+            </CounterLabel>
+          ),
         }))
         .filter((patient) => patient.text.includes(patientsFilterText)),
-    [patients, patientsFilterText]
+    [patients, patientsFilterText, patientsStatisticsList]
   );
 
   const doctorsItems = useMemo(
@@ -244,9 +260,14 @@ export const Visits = () => {
         .map((key) => ({
           ...doctors[key],
           text: getFullName(doctors[key]),
+          leadingVisual: () => (
+            <CounterLabel>
+              {doctrosStatisticsList[getFullName(doctors[key])]}
+            </CounterLabel>
+          ),
         }))
         .filter((el) => el.text.includes(doctorsFilterText)),
-    [doctors, doctorsFilterText]
+    [doctors, doctorsFilterText, doctrosStatisticsList]
   );
 
   const departmentItems = useMemo(
@@ -258,11 +279,19 @@ export const Visits = () => {
           }
           return {
             ...acc,
-            [el.department]: { id: el.department, text: el.department },
+            [el.department]: {
+              id: el.department,
+              text: el.department,
+              leadingVisual: () => (
+                <CounterLabel>
+                  {departmentStatisticsList[el.department]}
+                </CounterLabel>
+              ),
+            },
           };
         }, {})
       ),
-    [doctors, departmentsFilterText]
+    [doctors, departmentsFilterText, departmentStatisticsList]
   );
 
   useEffect(() => {
