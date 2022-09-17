@@ -37,7 +37,6 @@ export const AddDoctor = () => {
 
   const handleSubmit = (event) => {
     if (id) {
-      console.log();
       updateDoctor({
         fathersName,
         firstName,

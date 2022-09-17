@@ -229,15 +229,6 @@ export const Visits = () => {
     [filteredItems]
   );
 
-  console.log(
-    "filteredItems",
-    filteredItems,
-    childrenStatistics,
-    departmentStatisticsList,
-    doctrosStatisticsList,
-    tagsStatisticsList
-  );
-
   const patientItems = useMemo(
     () =>
       Object.keys(patients)
@@ -251,7 +242,8 @@ export const Visits = () => {
           ),
         }))
         .filter((patient) => patient.text.includes(patientsFilterText)),
-    [patients, patientsFilterText, patientsStatisticsList]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [patients, patientsFilterText]
   );
 
   const doctorsItems = useMemo(
@@ -267,7 +259,8 @@ export const Visits = () => {
           ),
         }))
         .filter((el) => el.text.includes(doctorsFilterText)),
-    [doctors, doctorsFilterText, doctrosStatisticsList]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [doctors, doctorsFilterText]
   );
 
   const departmentItems = useMemo(
@@ -291,7 +284,8 @@ export const Visits = () => {
           };
         }, {})
       ),
-    [doctors, departmentsFilterText, departmentStatisticsList]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [doctors, departmentsFilterText]
   );
 
   useEffect(() => {
