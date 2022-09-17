@@ -1,6 +1,13 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { Box, Button, Text, Tooltip, Token } from "@primer/react";
+import {
+  Box,
+  Button,
+  Text,
+  Tooltip,
+  Token,
+  IssueLabelToken,
+} from "@primer/react";
 import { OrganizationIcon, CalendarIcon } from "@primer/octicons-react";
 import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
 import { ReactComponent as DoctorIcon } from "../../assets/icons/user-doctor-solid.svg";
@@ -16,7 +23,7 @@ export const VisitRow = ({
   onStartDelete,
   onConfirmDelete,
   onCancelDelete,
-  on,
+  isChild,
 }) => {
   const handleStartDelete = useCallback(() => {
     onStartDelete(id);
@@ -29,6 +36,7 @@ export const VisitRow = ({
   if (!patient || !doctor) {
     return null;
   }
+
   return (
     <Box
       sx={{
@@ -87,6 +95,18 @@ export const VisitRow = ({
             </Text>
           </Tooltip>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            {isChild && (
+              <IssueLabelToken
+                text="неповнолітній"
+                style={{
+                  cursor: "pointer",
+                }}
+                fillColor="#0366d6"
+                isSelected={hasQuery("1", "child")}
+                as={NavLink}
+                to={`/?${toggleQuery("1", "child")}`}
+              />
+            )}
             {patient.tags.map((tag) => (
               <Token
                 sx={{

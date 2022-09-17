@@ -17,6 +17,7 @@ import {
   getVisitByID,
   getAllDoctors,
   getAllPatients,
+  getPatientByID,
 } from "../../utils/db";
 import dayjs from "dayjs";
 
@@ -53,12 +54,16 @@ export const AddVisit = () => {
         id: parseInt(id, 10),
       }).then(() => navigate("/"));
     } else {
-      addVisit({
-        doctor: doctorObj.id,
-        patient: patientObj.id,
-        dateTime: Date.parse(dateTime),
-        timestamp: Date.now(),
-      }).then(() => navigate("/"));
+      getPatientByID(patientObj.id).then((patientEl) => {
+        const isChild = dayjs(Date.now()).diff(patientEl.birthDate) >= 18;
+        addVisit({
+          doctor: doctorObj.id,
+          patient: patientObj.id,
+          dateTime: Date.parse(dateTime),
+          isChild,
+          timestamp: Date.now(),
+        }).then(() => navigate("/"));
+      });
     }
     event.preventDefault();
   };

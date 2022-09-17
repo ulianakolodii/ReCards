@@ -51,3 +51,12 @@ export const filterByDateTime =
       dateTime >= Date.parse(fromDateTime) && dateTime <= Date.parse(toDateTime)
     );
   };
+
+export const filterByChild =
+  (childTags) =>
+  ({ isChild }) => {
+    if (childTags.length === 0 || isChild === true) {
+      return true;
+    }
+    return false;
+  };

@@ -16,6 +16,7 @@ import {
   FormControl,
   SelectPanel,
   Token,
+  IssueLabelToken,
 } from "@primer/react";
 import {
   SearchIcon,
@@ -43,6 +44,7 @@ import {
   filterByDoctors,
   filterByFilterValue,
   filterByPatients,
+  filterByChild,
   getFullName,
 } from "./utils";
 import { useQuery } from "../../hooks";
@@ -147,6 +149,7 @@ export const Visits = () => {
             filterByDoctors(doctorsSelected)(el),
             filterByPatients(patientsSelected)(el),
             filterByDateTime(fromDateTime, toDateTime)(el),
+            filterByChild(query.getAll("child"))(el),
             containsTags(query.getAll("tag"))(el?.patient || {}),
           ].every((el) => !!el === true)
         )
@@ -277,6 +280,16 @@ export const Visits = () => {
         >
           <Box sx={{ display: "flex", gap: 2 }}>
             <Text sx={{ fontSize: 14 }}>Мітки:</Text>
+            <IssueLabelToken
+              text="неповнолітній"
+              style={{
+                cursor: "pointer",
+              }}
+              fillColor="#0366d6"
+              isSelected={hasQuery("1", "child")}
+              as={NavLink}
+              to={`/?${toggleQuery("1", "child")}`}
+            />
             {tags &&
               tags.map((tag) => (
                 <Token
