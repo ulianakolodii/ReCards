@@ -23,6 +23,7 @@ import {
   SortAscIcon,
   SortDescIcon,
   TriangleDownIcon,
+  XIcon,
 } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { VisitRow } from "../../components";
@@ -285,6 +286,44 @@ export const Visits = () => {
     [doctors, departmentsFilterText, departmentStatisticsList]
   );
 
+  const handleClearClick = useCallback(() => {
+    setFilterValue("");
+    setDepartmentsSelected([]);
+    setPatientSelected([]);
+    setDoctorsSelected([]);
+    setFromDateTime("");
+    setToDateTime("");
+    window.location.search = "";
+  }, [
+    setFilterValue,
+    setDepartmentsSelected,
+    setPatientSelected,
+    setDoctorsSelected,
+  ]);
+
+  window.t = query;
+
+  const isClearable = useMemo(
+    () =>
+      !!filterValue ||
+      !!fromDateTime ||
+      !!toDateTime ||
+      query.getAll("child").length > 0 ||
+      query.getAll("tag").length > 0 ||
+      departmentsSelected.length > 0 ||
+      doctorsSelected.length > 0 ||
+      patientsSelected.length > 0,
+    [
+      filterValue,
+      fromDateTime,
+      toDateTime,
+      query,
+      departmentsSelected,
+      doctorsSelected,
+      patientsSelected,
+    ]
+  );
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -336,6 +375,27 @@ export const Visits = () => {
             Додати візит
           </Button>
         </Box>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          marginBottom: 3,
+        }}
+      >
+        {isClearable && (
+          <Button
+            variant="invisible"
+            sx={{ "& span": { display: "flex", gap: 2, alignItems: "center" } }}
+            onClick={handleClearClick}
+          >
+            <XIcon />
+            <Text>
+              Очистити поточний пошуковий запит, фільтри та сортування
+            </Text>
+          </Button>
+        )}
       </Box>
       <PageLayout.Content>
         <Box
