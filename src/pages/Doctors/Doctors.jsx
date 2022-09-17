@@ -116,6 +116,7 @@ export const Doctors = () => {
             background: (theme) => theme.colors.btn.focusBg,
             borderTopRightRadius: 6,
             borderTopLeftRadius: 6,
+            borderWidth: 1,
             borderStyle: "solid",
             borderColor: "btn.border",
             padding: 3,

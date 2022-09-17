@@ -6,14 +6,15 @@ import React, {
   useTransition,
 } from "react";
 import {
-  PageLayout,
-  Box,
-  Button,
-  Token,
-  TextInput,
-  Text,
   ActionList,
   ActionMenu,
+  Box,
+  Button,
+  Label,
+  PageLayout,
+  Text,
+  TextInput,
+  CounterLabel,
 } from "@primer/react";
 import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
@@ -96,6 +97,19 @@ export const Patients = () => {
       .sort(sortBy(order, orderBy));
   }, [patients, filterValue, order, orderBy, query]);
 
+  const tagsStatisticsList = useMemo(
+    () =>
+      filteredItems.reduce((list, patient) => {
+        if (patient.tags?.length > 0) {
+          patient.tags.forEach((tag) => {
+            list[tag.id] = (list[tag.id] || 0) + 1;
+          });
+        }
+        return list;
+      }, {}),
+    [filteredItems]
+  );
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -135,6 +149,7 @@ export const Patients = () => {
               background: (theme) => theme.colors.btn.focusBg,
               borderTopRightRadius: 6,
               borderTopLeftRadius: 6,
+              borderWidth: 1,
               borderStyle: "solid",
               borderColor: "btn.border",
               padding: 3,
@@ -146,18 +161,29 @@ export const Patients = () => {
             <Box sx={{ display: "flex", gap: 2 }}>
               <Text sx={{ fontSize: 14 }}>Мітки:</Text>
               {tags &&
-                tags.map((tag) => (
-                  <Token
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                    isSelected={hasQuery(tag.id)}
-                    as={NavLink}
-                    key={tag.id}
-                    text={tag.text}
-                    to={`/patients?${toggleQuery(tag.id)}`}
-                  />
-                ))}
+                tags.map((tag) =>
+                  !tagsStatisticsList[tag.id] ? null : (
+                    <Label
+                      as={NavLink}
+                      key={tag.id}
+                      to={`/patients?${toggleQuery(tag.id)}`}
+                      sx={{
+                        cursor: "pointer",
+                        textDecoration: "none",
+                        display: "flex",
+                        gap: 1,
+                        background: (theme) =>
+                          !hasQuery(tag.id)
+                            ? "#fff"
+                            : theme.colors.border.default,
+                        color: () => (hasQuery(tag.id) ? "#fff" : "inherit"),
+                      }}
+                    >
+                      {tag.text}
+                      <CounterLabel>{tagsStatisticsList[tag.id]}</CounterLabel>
+                    </Label>
+                  )
+                )}
             </Box>
             <Box>
               <ActionMenu>

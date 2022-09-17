@@ -16,7 +16,8 @@ import {
   FormControl,
   SelectPanel,
   Token,
-  IssueLabelToken,
+  Label,
+  CounterLabel,
 } from "@primer/react";
 import {
   SearchIcon,
@@ -174,6 +175,58 @@ export const Visits = () => {
     ]
   );
 
+  const childrenStatistics = useMemo(
+    () =>
+      filteredItems.reduce((sum, { isChild }) => (isChild ? sum + 1 : sum), 0),
+    [filteredItems]
+  );
+
+  const departmentStatisticsList = useMemo(
+    () =>
+      filteredItems.reduce(
+        (list, { doctor }) => ({
+          ...list,
+          [doctor.department]: (list[doctor.department] || 0) + 1,
+        }),
+        {}
+      ),
+    [filteredItems]
+  );
+
+  const doctrosStatisticsList = useMemo(
+    () =>
+      filteredItems.reduce(
+        (list, { doctor }) => ({
+          ...list,
+          [getFullName(doctor)]: (list[getFullName(doctor)] || 0) + 1,
+        }),
+        {}
+      ),
+    [filteredItems]
+  );
+
+  const tagsStatisticsList = useMemo(
+    () =>
+      filteredItems.reduce((list, { patient }) => {
+        if (patient.tags?.length > 0) {
+          patient.tags.forEach((tag) => {
+            list[tag.id] = (list[tag.id] || 0) + 1;
+          });
+        }
+        return list;
+      }, {}),
+    [filteredItems]
+  );
+
+  console.log(
+    "filteredItems",
+    filteredItems,
+    childrenStatistics,
+    departmentStatisticsList,
+    doctrosStatisticsList,
+    tagsStatisticsList
+  );
+
   const patientItems = useMemo(
     () =>
       Object.keys(patients)
@@ -272,6 +325,7 @@ export const Visits = () => {
             borderTopLeftRadius: 6,
             borderStyle: "solid",
             borderColor: "btn.border",
+            borderWidth: 1,
             padding: 3,
             display: "flex",
             justifyContent: "space-between",
@@ -280,29 +334,58 @@ export const Visits = () => {
         >
           <Box sx={{ display: "flex", gap: 2 }}>
             <Text sx={{ fontSize: 14 }}>Мітки:</Text>
-            <IssueLabelToken
-              text="неповнолітній"
-              style={{
-                cursor: "pointer",
-              }}
-              fillColor="#0366d6"
-              isSelected={hasQuery("1", "child")}
-              as={NavLink}
-              to={`/?${toggleQuery("1", "child")}`}
-            />
-            {tags &&
-              tags.map((tag) => (
-                <Token
+            {!!childrenStatistics && (
+              <Label
+                variant="accent"
+                sx={{
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  display: "flex",
+                  gap: 1,
+                  background: (theme) =>
+                    !hasQuery("1", "child") ? "#fff" : theme.colors.accent.fg,
+                  color: (theme) =>
+                    hasQuery("1", "child") ? "#fff" : theme.colors.accent.fg,
+                }}
+                as={NavLink}
+                to={`/?${toggleQuery("1", "child")}`}
+              >
+                неповнолітній
+                <CounterLabel
                   sx={{
-                    cursor: "pointer",
+                    background: (theme) => theme.colors.accent.muted,
+                    color: (theme) =>
+                      hasQuery("1", "child") ? "#fff" : theme.colors.accent.fg,
                   }}
-                  isSelected={hasQuery(tag.id)}
-                  as={NavLink}
-                  key={tag.id}
-                  text={tag.text}
-                  to={`/?${toggleQuery(tag.id)}`}
-                />
-              ))}
+                >
+                  {childrenStatistics}
+                </CounterLabel>
+              </Label>
+            )}
+            {tags &&
+              tags.map((tag) =>
+                !tagsStatisticsList[tag.id] ? null : (
+                  <Label
+                    as={NavLink}
+                    key={tag.id}
+                    to={`/?${toggleQuery(tag.id)}`}
+                    sx={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      display: "flex",
+                      gap: 1,
+                      background: (theme) =>
+                        !hasQuery(tag.id)
+                          ? "#fff"
+                          : theme.colors.border.default,
+                      color: () => (hasQuery(tag.id) ? "#fff" : "inherit"),
+                    }}
+                  >
+                    {tag.text}
+                    <CounterLabel>{tagsStatisticsList[tag.id]}</CounterLabel>
+                  </Label>
+                )
+              )}
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <SelectPanel

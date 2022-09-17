@@ -1,13 +1,6 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Text,
-  Tooltip,
-  Token,
-  IssueLabelToken,
-} from "@primer/react";
+import { Box, Button, Text, Tooltip, Label } from "@primer/react";
 import { OrganizationIcon, CalendarIcon } from "@primer/octicons-react";
 import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
 import { ReactComponent as DoctorIcon } from "../../assets/icons/user-doctor-solid.svg";
@@ -96,28 +89,41 @@ export const VisitRow = ({
           </Tooltip>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             {isChild && (
-              <IssueLabelToken
-                text="неповнолітній"
-                style={{
-                  cursor: "pointer",
-                }}
-                fillColor="#0366d6"
-                isSelected={hasQuery("1", "child")}
-                as={NavLink}
-                to={`/?${toggleQuery("1", "child")}`}
-              />
-            )}
-            {patient.tags.map((tag) => (
-              <Token
+              <Label
+                variant="accent"
                 sx={{
                   cursor: "pointer",
+                  textDecoration: "none",
+                  display: "flex",
+                  gap: 1,
+                  background: (theme) =>
+                    !hasQuery("1", "child") ? "#fff" : theme.colors.accent.fg,
+                  color: (theme) =>
+                    hasQuery("1", "child") ? "#fff" : theme.colors.accent.fg,
                 }}
-                isSelected={hasQuery(tag.id)}
+                as={NavLink}
+                to={`/?${toggleQuery("1", "child")}`}
+              >
+                неповнолітній
+              </Label>
+            )}
+            {patient.tags.map((tag) => (
+              <Label
                 as={NavLink}
                 key={tag.id}
-                text={tag.text}
                 to={`/?${toggleQuery(tag.id)}`}
-              />
+                sx={{
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  display: "flex",
+                  gap: 1,
+                  background: (theme) =>
+                    !hasQuery(tag.id) ? "#fff" : theme.colors.border.default,
+                  color: () => (hasQuery(tag.id) ? "#fff" : "inherit"),
+                }}
+              >
+                {tag.text}
+              </Label>
             ))}
           </Box>
         </Box>

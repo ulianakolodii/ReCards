@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { Box, Button, Token, Text, Tooltip } from "@primer/react";
+import { Box, Button, Label, Text, Tooltip } from "@primer/react";
 import { CalendarIcon } from "@primer/octicons-react";
 import { toggleQuery, hasQuery } from "../../utils";
 import { ReactComponent as MobileIcon } from "../../assets/icons/mobile.svg";
@@ -86,16 +86,22 @@ export const PatientRow = ({
           </Tooltip>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             {tags.map((tag) => (
-              <Token
-                sx={{
-                  cursor: "pointer",
-                }}
-                isSelected={hasQuery(tag.id)}
+              <Label
                 as={NavLink}
                 key={tag.id}
-                text={tag.text}
                 to={`/patients?${toggleQuery(tag.id)}`}
-              />
+                sx={{
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  display: "flex",
+                  gap: 1,
+                  background: (theme) =>
+                    !hasQuery(tag.id) ? "#fff" : theme.colors.border.default,
+                  color: () => (hasQuery(tag.id) ? "#fff" : "inherit"),
+                }}
+              >
+                {tag.text}
+              </Label>
             ))}
           </Box>
         </Box>
