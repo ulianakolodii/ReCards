@@ -242,8 +242,7 @@ export const Visits = () => {
           ),
         }))
         .filter((patient) => patient.text.includes(patientsFilterText)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [patients, patientsFilterText]
+    [patients, patientsFilterText, patientsStatisticsList]
   );
 
   const doctorsItems = useMemo(
@@ -259,8 +258,7 @@ export const Visits = () => {
           ),
         }))
         .filter((el) => el.text.includes(doctorsFilterText)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [doctors, doctorsFilterText]
+    [doctors, doctorsFilterText, doctrosStatisticsList]
   );
 
   const departmentItems = useMemo(
@@ -284,8 +282,7 @@ export const Visits = () => {
           };
         }, {})
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [doctors, departmentsFilterText]
+    [doctors, departmentsFilterText, departmentStatisticsList]
   );
 
   useEffect(() => {
