@@ -148,7 +148,7 @@ export const Visits = () => {
             filterByPatients(patientsSelected)(el),
             filterByDateTime(fromDateTime, toDateTime)(el),
             containsTags(query.getAll("tag"))(el?.patient || {}),
-          ].every((el) => el === true)
+          ].every((el) => !!el === true)
         )
         .sort(sortBy(order, orderBy)),
     [
