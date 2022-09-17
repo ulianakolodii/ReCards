@@ -20,19 +20,27 @@ import {
 
 export const AddDoctor = () => {
   const { id } = useParams();
-  const [{ fathersName, firstName, lastName, phoneNumber }, setDoctor] =
-    useState({ fathersName: "", firstName: "", lastName: "", phoneNumber: "" });
+  const [
+    { fathersName, firstName, lastName, phoneNumber, department },
+    setDoctor,
+  ] = useState({
+    fathersName: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+  });
   const navigate = useNavigate();
-
-  const [department, setDepartment] = useState("");
   const [departmentItems, setDepartmentItems] = useState([]);
 
   const handleInput = (event) => {
-    setDepartment(event.target.value);
+    setDoctor((prevDoctor) => ({
+      ...prevDoctor,
+      department: event.target.value,
+    }));
   };
 
   const handleSelectedChange = (event) => {
-    setDepartment(event[0].text);
+    setDoctor((prevDoctor) => ({ ...prevDoctor, department: event[0].text }));
   };
 
   const handleSubmit = (event) => {
