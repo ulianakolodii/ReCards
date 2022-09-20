@@ -142,9 +142,11 @@ export const Patients = () => {
             />
           </FormControl>
         </Box>
-        <Button as={NavLink} to="/add-patient">
-          Додати пацієнта
-        </Button>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
+          <Button as={NavLink} to="/add-patient">
+            Додати пацієнта
+          </Button>
+        </Box>
       </Box>
       <PageLayout.Content>
         <Box>

@@ -45,14 +45,18 @@ export const AddDoctor = () => {
 
   const handleSubmit = (event) => {
     if (id) {
-      updateDoctor({
-        fathersName,
-        firstName,
-        lastName,
-        phoneNumber,
-        department,
-        id: parseInt(id, 10),
-      }).then(() => navigate("/doctors"));
+      getDoctorByID(parseInt(id, 10))
+        .then((doctorEl) =>
+          updateDoctor({
+            ...doctorEl,
+            fathersName,
+            firstName,
+            lastName,
+            phoneNumber,
+            department,
+          })
+        )
+        .then(() => navigate("/doctors"));
     } else {
       addDoctor({
         fathersName,

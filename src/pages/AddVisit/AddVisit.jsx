@@ -47,12 +47,16 @@ export const AddVisit = () => {
 
   const handleSubmit = (event) => {
     if (id) {
-      updateVisit({
-        doctor: doctorObj.id,
-        patient: patientObj.id,
-        dateTime: Date.parse(dateTime),
-        id: parseInt(id, 10),
-      }).then(() => navigate("/"));
+      getVisitByID(parseInt(id, 10))
+        .then((visitEl) =>
+          updateVisit({
+            ...visitEl,
+            doctor: doctorObj.id,
+            patient: patientObj.id,
+            dateTime: Date.parse(dateTime),
+          })
+        )
+        .then(() => navigate("/"));
     } else {
       getPatientByID(patientObj.id).then((patientEl) => {
         const isChild = dayjs(Date.now()).diff(patientEl.birthDate) >= 18;

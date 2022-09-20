@@ -110,9 +110,11 @@ export const Doctors = () => {
             />
           </FormControl>
         </Box>
-        <Button as={NavLink} to="/add-doctor">
-          Додати лікаря
-        </Button>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
+          <Button as={NavLink} to="/add-doctor">
+            Додати лікаря
+          </Button>
+        </Box>
       </Box>
       <PageLayout.Content>
         <Box

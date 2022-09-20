@@ -45,16 +45,20 @@ export const AddPatient = () => {
 
   const handleSubmit = (event) => {
     if (id) {
-      updatePatient({
-        fathersName,
-        firstName,
-        lastName,
-        birthDate,
-        additionalInfo,
-        phoneNumber,
-        tags,
-        id: parseInt(id, 10),
-      }).then(() => navigate("/patients"));
+      getPatientByID(parseInt(id, 10))
+        .then((patientEl) =>
+          updatePatient({
+            ...patientEl,
+            fathersName,
+            firstName,
+            lastName,
+            birthDate,
+            additionalInfo,
+            phoneNumber,
+            tags,
+          })
+        )
+        .then(() => navigate("/patients"));
     } else {
       addPatient({
         fathersName,
