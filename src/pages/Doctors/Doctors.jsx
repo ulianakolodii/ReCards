@@ -13,6 +13,7 @@ import {
   Text,
   ActionList,
   ActionMenu,
+  FormControl,
 } from "@primer/react";
 import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
@@ -96,7 +97,10 @@ export const Doctors = () => {
         }}
       >
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          <Box sx={{ display: "flex", gap: 3 }}>
+          <FormControl>
+            <FormControl.Label>
+              Записів: {filteredItems.length}
+            </FormControl.Label>
             <TextInput
               onInput={handleFilterInput}
               value={filterValue}
@@ -104,7 +108,7 @@ export const Doctors = () => {
               placeholder="Пошук"
               sx={{ minWidth: 250 }}
             />
-          </Box>
+          </FormControl>
         </Box>
         <Button as={NavLink} to="/add-doctor">
           Додати лікаря

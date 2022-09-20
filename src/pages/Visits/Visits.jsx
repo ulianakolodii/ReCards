@@ -14,7 +14,6 @@ import {
   ActionList,
   ActionMenu,
   FormControl,
-  SelectPanel,
   Label,
   CounterLabel,
 } from "@primer/react";
@@ -26,7 +25,7 @@ import {
   XIcon,
 } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
-import { VisitRow } from "../../components";
+import { VisitRow, SelectPanel } from "../../components";
 import {
   getAllDoctors,
   deleteVisit,
@@ -301,8 +300,6 @@ export const Visits = () => {
     setDoctorsSelected,
   ]);
 
-  window.t = query;
-
   const isClearable = useMemo(
     () =>
       !!filterValue ||
@@ -343,7 +340,10 @@ export const Visits = () => {
         }}
       >
         <Box sx={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
-          <Box sx={{ display: "flex", gap: 3 }}>
+          <FormControl>
+            <FormControl.Label>
+              Записів: {filteredItems.length}
+            </FormControl.Label>
             <TextInput
               onInput={handleFilterInput}
               value={filterValue}
@@ -351,7 +351,7 @@ export const Visits = () => {
               placeholder="Пошук"
               sx={{ minWidth: 250 }}
             />
-          </Box>
+          </FormControl>
           <FormControl>
             <FormControl.Label>Від</FormControl.Label>
             <TextInput
