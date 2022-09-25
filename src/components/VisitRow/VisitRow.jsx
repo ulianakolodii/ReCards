@@ -144,11 +144,9 @@ export const VisitRow = ({
           </Box>
         </Box>
         <Box sx={{ fontSize: 12, display: "flex", gap: 2, opacity: 0.5 }}>
-          {id && (
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              <Text>#{id}</Text>
-            </Box>
-          )}
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            <Text>#{patient.id}</Text>
+          </Box>
           {patient.phoneNumber && (
             <Box
               sx={{

@@ -48,18 +48,25 @@ export const AddVisit = () => {
   const handleSubmit = (event) => {
     if (id) {
       getVisitByID(parseInt(id, 10))
-        .then((visitEl) =>
-          updateVisit({
+        .then((visitEl) => {
+          console.log("visitEl", visitEl, dateTime, Date.parse(dateTime));
+          return updateVisit({
             ...visitEl,
             doctor: doctorObj.id,
             patient: patientObj.id,
             dateTime: Date.parse(dateTime),
-          })
-        )
+          });
+        })
         .then(() => navigate("/"));
     } else {
       getPatientByID(patientObj.id).then((patientEl) => {
-        const isChild = dayjs(Date.now()).diff(patientEl.birthDate) >= 18;
+        const isChild =
+          dayjs(Date.now()).diff(patientEl.birthDate, "year") <= 15;
+        console.log(
+          "isChild",
+          isChild,
+          dayjs(Date.now()).diff(patientEl.birthDate, "year")
+        );
         addVisit({
           doctor: doctorObj.id,
           patient: patientObj.id,
@@ -92,7 +99,7 @@ export const AddVisit = () => {
           ({ doctor: doctorID, patient: patientID, dateTime: dt }) => {
             setDoctor(doctors.find((el) => el.id === doctorID)?.text || "");
             setPatient(patients.find((el) => el.id === patientID)?.text || "");
-            setDateTime(dt);
+            setDateTime(dayjs(dt).format().slice(0, 16));
           }
         );
       }
