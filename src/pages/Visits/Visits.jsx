@@ -54,7 +54,7 @@ export const Visits = () => {
   const [deletingID, setDeletingID] = useState();
   const [filterValue, setFilterValue] = useState("");
   const [, startTransition] = useTransition();
-  const [orderBy, setOrderBy] = useState("id");
+  const [orderBy, setOrderBy] = useState("dateTime");
   const [order, setOrder] = useState(false);
   const [tags, setTags] = useState();
 
@@ -161,6 +161,7 @@ export const Visits = () => {
           lastName: patients[visit.patient]?.lastName,
           doctor: doctors[visit.doctor],
           patient: patients[visit.patient],
+          patientId: visit.patient,
           deleting: visit.id === deletingID,
           onStartDelete: handleStartDelete,
           onCancelDelete: handleCancelDelete,
@@ -511,8 +512,44 @@ export const Visits = () => {
               <ActionMenu.Overlay width="medium">
                 <ActionList selectionVariant="single">
                   <ActionList.Item
-                    onSelect={createHandleSort("id", true)}
-                    selected={order === true && orderBy === "id"}
+                    onSelect={createHandleSort("dateTime", true)}
+                    selected={order === true && orderBy === "dateTime"}
+                  >
+                    <ActionList.LeadingVisual>
+                      <SortAscIcon />
+                    </ActionList.LeadingVisual>
+                    За датою візита (зростання)
+                  </ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("dateTime", false)}
+                    selected={order === false && orderBy === "dateTime"}
+                  >
+                    <ActionList.LeadingVisual>
+                      <SortDescIcon />
+                    </ActionList.LeadingVisual>
+                    За датою візита (спадання)
+                  </ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("timestamp", true)}
+                    selected={order === true && orderBy === "timestamp"}
+                  >
+                    <ActionList.LeadingVisual>
+                      <SortAscIcon />
+                    </ActionList.LeadingVisual>
+                    За датою додавання (зростання)
+                  </ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("timestamp", false)}
+                    selected={order === false && orderBy === "timestamp"}
+                  >
+                    <ActionList.LeadingVisual>
+                      <SortDescIcon />
+                    </ActionList.LeadingVisual>
+                    За датою додавання (спадання)
+                  </ActionList.Item>
+                  <ActionList.Item
+                    onSelect={createHandleSort("patientId", true)}
+                    selected={order === true && orderBy === "patientId"}
                   >
                     <ActionList.LeadingVisual>
                       <SortAscIcon />
@@ -520,8 +557,8 @@ export const Visits = () => {
                     За номером (зростання)
                   </ActionList.Item>
                   <ActionList.Item
-                    onSelect={createHandleSort("id", false)}
-                    selected={order === false && orderBy === "id"}
+                    onSelect={createHandleSort("patientId", false)}
+                    selected={order === false && orderBy === "patientId"}
                   >
                     <ActionList.LeadingVisual>
                       <SortDescIcon />

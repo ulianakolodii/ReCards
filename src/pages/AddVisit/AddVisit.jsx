@@ -49,7 +49,6 @@ export const AddVisit = () => {
     if (id) {
       getVisitByID(parseInt(id, 10))
         .then((visitEl) => {
-          console.log("visitEl", visitEl, dateTime, Date.parse(dateTime));
           return updateVisit({
             ...visitEl,
             doctor: doctorObj.id,
@@ -62,11 +61,6 @@ export const AddVisit = () => {
       getPatientByID(patientObj.id).then((patientEl) => {
         const isChild =
           dayjs(Date.now()).diff(patientEl.birthDate, "year") <= 15;
-        console.log(
-          "isChild",
-          isChild,
-          dayjs(Date.now()).diff(patientEl.birthDate, "year")
-        );
         addVisit({
           doctor: doctorObj.id,
           patient: patientObj.id,
