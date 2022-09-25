@@ -21,11 +21,10 @@ import {
   SearchIcon,
   SortAscIcon,
   SortDescIcon,
-  TriangleDownIcon,
   XIcon,
 } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
-import { VisitRow, SelectPanel } from "../../components";
+import { VisitRow, DropdownMultiSelect } from "../../components";
 import {
   getAllDoctors,
   deleteVisit,
@@ -59,17 +58,9 @@ export const Visits = () => {
   const [order, setOrder] = useState(false);
   const [tags, setTags] = useState();
 
-  const [patientsSelected, setPatientSelected] = useState([]);
-  const [openPatientsFilter, setOpenPatientsFilter] = useState(false);
-  const [patientsFilterText, setPatientsFilterText] = useState("");
-
-  const [doctorsSelected, setDoctorsSelected] = useState([]);
-  const [openDoctorsFilter, setOpenDoctorsFilter] = useState(false);
-  const [doctorsFilterText, setDoctorsFilterText] = useState("");
-
-  const [departmentsSelected, setDepartmentsSelected] = useState([]);
-  const [openDepartmentsFilter, setOpenDepartmentsFilter] = useState(false);
-  const [departmentsFilterText, setDepartmentsFilterText] = useState("");
+  const [patientsSelected, setPatientSelected] = useState({});
+  const [doctorsSelected, setDoctorsSelected] = useState({});
+  const [departmentsSelected, setDepartmentsSelected] = useState({});
 
   const [fromDateTime, setFromDateTime] = useState("");
   const [toDateTime, setToDateTime] = useState("");
@@ -129,6 +120,39 @@ export const Visits = () => {
     [setToDateTime]
   );
 
+  const handleDepartmentChange = (event, el) => {
+    setDepartmentsSelected((prev) => {
+      if (prev[el.id]) {
+        return Object.fromEntries(
+          Object.entries(prev).filter(([id]) => id !== el.id)
+        );
+      }
+      return { ...prev, [el.id]: el };
+    });
+  };
+
+  const handleDoctorsChange = (event, el) => {
+    setDoctorsSelected((prev) => {
+      if (prev[el.id]) {
+        return Object.fromEntries(
+          Object.entries(prev).filter(([id, item]) => item.id !== el.id)
+        );
+      }
+      return { ...prev, [el.id]: el };
+    });
+  };
+
+  const handlePatientsChange = (event, el) => {
+    setPatientSelected((prev) => {
+      if (prev[el.id]) {
+        return Object.fromEntries(
+          Object.entries(prev).filter(([id, item]) => item.id !== el.id)
+        );
+      }
+      return { ...prev, [el.id]: el };
+    });
+  };
+
   const filteredItems = useMemo(
     () =>
       visits
@@ -145,9 +169,9 @@ export const Visits = () => {
         .filter((el) =>
           [
             filterByFilterValue(filterValue)(el),
-            filterByDepartments(departmentsSelected)(el),
-            filterByDoctors(doctorsSelected)(el),
-            filterByPatients(patientsSelected)(el),
+            filterByDepartments(Object.values(departmentsSelected))(el),
+            filterByDoctors(Object.values(doctorsSelected))(el),
+            filterByPatients(Object.values(patientsSelected))(el),
             filterByDateTime(fromDateTime, toDateTime)(el),
             filterByChild(query.getAll("child"))(el),
             containsTags(query.getAll("tag"))(el?.patient || {}),
@@ -231,48 +255,44 @@ export const Visits = () => {
 
   const patientItems = useMemo(
     () =>
-      Object.keys(patients)
-        .map((key) => ({
-          ...patients[key],
-          text: getFullName(patients[key]),
-          leadingVisual: () => (
-            <CounterLabel>
-              {patientsStatisticsList[patients[key].id]}
-            </CounterLabel>
-          ),
-        }))
-        .filter((patient) => patient.text.includes(patientsFilterText)),
-    [patients, patientsFilterText, patientsStatisticsList]
+      Object.keys(patients).map((key) => ({
+        ...patients[key],
+        text: getFullName(patients[key]),
+        selected: !!patientsSelected[key],
+        leadingVisual: () => (
+          <CounterLabel>
+            {patientsStatisticsList[patients[key].id]}
+          </CounterLabel>
+        ),
+      })),
+    [patients, patientsStatisticsList, patientsSelected]
   );
 
   const doctorsItems = useMemo(
     () =>
-      Object.keys(doctors)
-        .map((key) => ({
-          ...doctors[key],
-          text: getFullName(doctors[key]),
-          leadingVisual: () => (
-            <CounterLabel>
-              {doctrosStatisticsList[getFullName(doctors[key])]}
-            </CounterLabel>
-          ),
-        }))
-        .filter((el) => el.text.includes(doctorsFilterText)),
-    [doctors, doctorsFilterText, doctrosStatisticsList]
+      Object.keys(doctors).map((key) => ({
+        ...doctors[key],
+        text: getFullName(doctors[key]),
+        selected: !!doctorsSelected[key],
+        leadingVisual: () => (
+          <CounterLabel>
+            {doctrosStatisticsList[getFullName(doctors[key])]}
+          </CounterLabel>
+        ),
+      })),
+    [doctors, doctrosStatisticsList, doctorsSelected]
   );
 
   const departmentItems = useMemo(
     () =>
       Object.values(
-        Object.entries(doctors).reduce((acc, [id, el]) => {
-          if (!el.department.includes(departmentsFilterText)) {
-            return acc;
-          }
+        Object.entries(doctors).reduce((acc, [, el]) => {
           return {
             ...acc,
             [el.department]: {
               id: el.department,
               text: el.department,
+              selected: !!departmentsSelected[el.department],
               leadingVisual: () => (
                 <CounterLabel>
                   {departmentStatisticsList[el.department]}
@@ -282,14 +302,14 @@ export const Visits = () => {
           };
         }, {})
       ),
-    [doctors, departmentsFilterText, departmentStatisticsList]
+    [doctors, departmentStatisticsList, departmentsSelected]
   );
 
   const handleClearClick = useCallback(() => {
     setFilterValue("");
-    setDepartmentsSelected([]);
-    setPatientSelected([]);
-    setDoctorsSelected([]);
+    setDepartmentsSelected({});
+    setPatientSelected({});
+    setDoctorsSelected({});
     setFromDateTime("");
     setToDateTime("");
     window.location.search = "";
@@ -307,9 +327,9 @@ export const Visits = () => {
       !!toDateTime ||
       query.getAll("child").length > 0 ||
       query.getAll("tag").length > 0 ||
-      departmentsSelected.length > 0 ||
-      doctorsSelected.length > 0 ||
-      patientsSelected.length > 0,
+      Object.values(departmentsSelected).length > 0 ||
+      Object.values(doctorsSelected).length > 0 ||
+      Object.values(patientsSelected).length > 0,
     [
       filterValue,
       fromDateTime,
@@ -468,66 +488,20 @@ export const Visits = () => {
               )}
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <SelectPanel
-              renderAnchor={({ ...anchorProps }) => (
-                <Button
-                  variant="invisible"
-                  trailingIcon={TriangleDownIcon}
-                  {...anchorProps}
-                >
-                  Кафедра
-                </Button>
-              )}
-              title="Сортувати за кафедрою"
-              open={openDepartmentsFilter}
-              onOpenChange={setOpenDepartmentsFilter}
+            <DropdownMultiSelect
+              title="Кафедра"
               items={departmentItems}
-              selected={departmentsSelected}
-              onSelectedChange={setDepartmentsSelected}
-              onFilterChange={setDepartmentsFilterText}
-              showItemDividers={true}
-              overlayProps={{ width: "medium", height: "medium" }}
+              onChange={handleDepartmentChange}
             />
-            <SelectPanel
-              renderAnchor={({ ...anchorProps }) => (
-                <Button
-                  variant="invisible"
-                  trailingIcon={TriangleDownIcon}
-                  {...anchorProps}
-                >
-                  Лікар
-                </Button>
-              )}
-              title="Сортувати за лікарем"
-              open={openDoctorsFilter}
-              onOpenChange={setOpenDoctorsFilter}
+            <DropdownMultiSelect
+              title="Лікар"
               items={doctorsItems}
-              selected={doctorsSelected}
-              onSelectedChange={setDoctorsSelected}
-              onFilterChange={setDoctorsFilterText}
-              showItemDividers={true}
-              overlayProps={{ width: "medium", height: "medium" }}
+              onChange={handleDoctorsChange}
             />
-            <SelectPanel
-              variant="inset"
-              renderAnchor={({ ...anchorProps }) => (
-                <Button
-                  variant="invisible"
-                  trailingIcon={TriangleDownIcon}
-                  {...anchorProps}
-                >
-                  Пацієнт
-                </Button>
-              )}
-              title="Сортувати за пацієнтом"
-              open={openPatientsFilter}
-              onOpenChange={setOpenPatientsFilter}
+            <DropdownMultiSelect
+              title="Пацієнт"
               items={patientItems}
-              selected={patientsSelected}
-              onSelectedChange={setPatientSelected}
-              onFilterChange={setPatientsFilterText}
-              showItemDividers={true}
-              overlayProps={{ width: "medium", height: "medium" }}
+              onChange={handlePatientsChange}
             />
             <ActionMenu>
               <ActionMenu.Button variant="invisible">

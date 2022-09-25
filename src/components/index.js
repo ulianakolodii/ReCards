@@ -5,3 +5,4 @@ export * from "./PatientRow";
 export * from "./DoctorRow";
 export * from "./VisitRow";
 export * from "./SelectPanel";
+export * from "./DropdownMultiSelect";
