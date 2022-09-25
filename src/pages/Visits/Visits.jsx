@@ -518,7 +518,7 @@ export const Visits = () => {
                     <ActionList.LeadingVisual>
                       <SortAscIcon />
                     </ActionList.LeadingVisual>
-                    За датою візита (зростання)
+                    За датою візиту (зростання)
                   </ActionList.Item>
                   <ActionList.Item
                     onSelect={createHandleSort("dateTime", false)}
@@ -527,7 +527,7 @@ export const Visits = () => {
                     <ActionList.LeadingVisual>
                       <SortDescIcon />
                     </ActionList.LeadingVisual>
-                    За датою візита (спадання)
+                    За датою візиту (спадання)
                   </ActionList.Item>
                   <ActionList.Item
                     onSelect={createHandleSort("timestamp", true)}
