@@ -38,6 +38,7 @@ import {
   containsTags,
 } from "../../utils";
 import {
+  filterUnvalidVisits,
   filterByDateTime,
   filterByDepartments,
   filterByDoctors,
@@ -169,6 +170,7 @@ export const Visits = () => {
         }))
         .filter((el) =>
           [
+            filterUnvalidVisits()(el),
             filterByFilterValue(filterValue)(el),
             filterByDepartments(Object.values(departmentsSelected))(el),
             filterByDoctors(Object.values(doctorsSelected))(el),
@@ -247,7 +249,7 @@ export const Visits = () => {
       filteredItems.reduce(
         (list, { patient }) => ({
           ...list,
-          [patient.id]: (list[patient.id] || 0) + 1,
+          [patient?.id]: (list[patient?.id] || 0) + 1,
         }),
         {}
       ),

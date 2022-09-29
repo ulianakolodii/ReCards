@@ -3,6 +3,11 @@ import { includesBy } from "../../utils";
 export const getFullName = (el) =>
   `${el?.lastName} ${el?.firstName} ${el?.fathersName}`;
 
+export const filterUnvalidVisits =
+  () =>
+  ({ doctor, patient, id }) =>
+    doctor && patient;
+
 export const filterByFilterValue =
   (filterValue) =>
   ({ doctor, patient, id }) =>
