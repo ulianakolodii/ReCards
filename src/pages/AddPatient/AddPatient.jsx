@@ -131,7 +131,7 @@ export const AddPatient = () => {
               block
             />
           </FormControl>
-          <FormControl>
+          <FormControl required>
             <FormControl.Label>Дата народження</FormControl.Label>
             <TextInput
               value={birthDate}
