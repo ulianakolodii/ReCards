@@ -50,6 +50,8 @@ export const DropdownMultiSelect = ({
       open={isOpen}
       onOpen={handleOpenOverlay}
       onClose={handleCloseOverlay}
+      side="inside-top"
+      align="end"
     >
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box
@@ -107,7 +109,7 @@ export const DropdownMultiSelect = ({
             value={filterValue}
             leadingVisual={SearchIcon}
             placeholder="Пошук"
-            sx={{ minWidth: 250 }}
+            sx={{ minWidth: 300 }}
           />
         </Box>
         <ActionList
