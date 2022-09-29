@@ -232,8 +232,8 @@ export const Visits = () => {
   const tagsStatisticsList = useMemo(
     () =>
       filteredItems.reduce((list, { patient }) => {
-        if (patient.tags?.length > 0) {
-          patient.tags.forEach((tag) => {
+        if (patient?.tags?.length > 0) {
+          patient?.tags.forEach((tag) => {
             list[tag.id] = (list[tag.id] || 0) + 1;
           });
         }
