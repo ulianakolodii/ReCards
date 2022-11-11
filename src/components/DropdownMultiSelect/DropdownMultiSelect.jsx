@@ -32,7 +32,7 @@ export const DropdownMultiSelect = ({
     setFilterValue("");
   };
 
-  const filteredItems = items.filter(({ text }) => text.includes(filterValue));
+  const filteredItems = items.filter(({ text }) => text?.includes(filterValue));
 
   const createOnSelectHandler = (el) => (event) => onChange(event, el);
 

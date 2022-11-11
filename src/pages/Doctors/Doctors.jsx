@@ -14,11 +14,14 @@ import {
   ActionList,
   ActionMenu,
   FormControl,
+  Pagination,
 } from "@primer/react";
 import { SearchIcon, SortAscIcon, SortDescIcon } from "@primer/octicons-react";
 import { NavLink } from "react-router-dom";
 import { DoctorRow } from "../../components";
 import { getAllDoctors, deleteDoctor, sortBy, includesBy } from "../../utils";
+
+const limit = 50;
 
 export const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -27,6 +30,7 @@ export const Doctors = () => {
   const [, startTransition] = useTransition();
   const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState(false);
+  const [page, setPage] = useState(1);
 
   const createHandleSort = (orderByColumn, orderType) => () => {
     setOrderBy(orderByColumn);
@@ -56,6 +60,10 @@ export const Doctors = () => {
     [doctors, filterValue, orderBy, order]
   );
 
+  const offset = useMemo(() => (page - 1) * limit, [page]);
+  const pages = useMemo(() => Math.ceil(filteredItems.length / limit), [filteredItems]);
+  const limitedItems = useMemo(() => filteredItems.slice(offset, offset + limit), [filteredItems, offset]);
+
   const loadDoctors = useCallback(() => {
     const handleStartDelete = (id) => {
       setDeletingID(id);
@@ -82,6 +90,15 @@ export const Doctors = () => {
       );
     });
   }, [setDoctors, deletingID]);
+
+  const handlePageChange = (event, page) => {
+    event.preventDefault();
+    setPage(page);
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [order, orderBy, filterValue]);
 
   useEffect(() => {
     loadDoctors();
@@ -180,10 +197,25 @@ export const Doctors = () => {
             </ActionMenu>
           </Box>
         </Box>
-        {filteredItems.map((doctor) => (
+        {limitedItems.map((doctor) => (
           <DoctorRow key={doctor.id} {...doctor} />
         ))}
-        {filteredItems.length === 0 && (
+        {pages > 1 ? (
+          <Pagination
+            currentPage={page}
+            pageCount={pages}
+            onPageChange={handlePageChange}
+            sx={{
+              "& em": {
+                minWidth: "auto",
+              },
+              "& a": {
+                minWidth: "auto",
+              },
+            }}
+          />
+        ) : null}
+        {limitedItems.length === 0 && (
           <Box
             sx={{
               width: "100%",

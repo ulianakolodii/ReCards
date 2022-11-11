@@ -16,6 +16,7 @@ import {
   FormControl,
   Label,
   CounterLabel,
+  Pagination,
 } from "@primer/react";
 import {
   SearchIcon,
@@ -49,6 +50,8 @@ import {
 } from "./utils";
 import { useQuery } from "../../hooks";
 
+const limit = 50;
+
 export const Visits = () => {
   const query = useQuery();
   const [[doctors, patients, visits], setItems] = useState([{}, {}, []]);
@@ -58,6 +61,7 @@ export const Visits = () => {
   const [orderBy, setOrderBy] = useState("dateTime");
   const [order, setOrder] = useState(false);
   const [tags, setTags] = useState();
+  const [page, setPage] = useState(query.get("page") || 1);
 
   const [patientsSelected, setPatientSelected] = useState({});
   const [doctorsSelected, setDoctorsSelected] = useState({});
@@ -200,6 +204,10 @@ export const Visits = () => {
       query,
     ]
   );
+
+  const offset = useMemo(() => (page - 1) * limit, [page]);
+  const pages = useMemo(() => Math.ceil(filteredItems.length / limit), [filteredItems]);
+  const limitedItems = useMemo(() => filteredItems.slice(offset, offset + limit), [filteredItems, offset]);
 
   const childrenStatistics = useMemo(
     () =>
@@ -344,6 +352,11 @@ export const Visits = () => {
     ]
   );
 
+  const handlePageChange = (event, page) => {
+    event.preventDefault();
+    setPage(page);
+  };
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -351,6 +364,10 @@ export const Visits = () => {
   useEffect(() => {
     getAllUniqueTags().then(setTags);
   }, [setTags]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [tags, order, orderBy, filterValue]);
 
   return (
     <PageLayout>
@@ -590,10 +607,25 @@ export const Visits = () => {
             </ActionMenu>
           </Box>
         </Box>
-        {filteredItems.map((doctor) => (
+        {limitedItems.map((doctor) => (
           <VisitRow key={doctor.id} {...doctor} />
         ))}
-        {filteredItems.length === 0 && (
+        {pages > 1 ? (
+          <Pagination
+            currentPage={page}
+            pageCount={pages}
+            onPageChange={handlePageChange}
+            sx={{
+              "& em": {
+                minWidth: "auto",
+              },
+              "& a": {
+                minWidth: "auto",
+              },
+            }}
+          />
+        ) : null}
+        {limitedItems.length === 0 && (
           <Box
             sx={{
               width: "100%",
